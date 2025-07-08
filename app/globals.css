@@ -1,26 +1,1129 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme inline {
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-card: #ffffff;
+  --color-card-foreground: #1e293b;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #1e293b;
+  --color-primary: #6366f1;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #475569;
+  --color-muted: #f8fafc;
+  --color-muted-foreground: #64748b;
+  --color-accent: #e0e7ff;
+  --color-accent-foreground: #3730a3;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #e2e8f0;
+  --color-input: #ffffff;
+  --color-ring: #6366f1;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+  --color-chart-1: #6366f1;
+  --color-chart-2: #06b6d4;
+  --color-chart-3: #10b981;
+  --color-chart-4: #f59e0b;
+  --color-chart-5: #ef4444;
+  --radius: 0.75rem;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  --gradient-accent: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Variables mejoradas para el diseño futurista */
+:root {
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --text-muted: #cbd5e1;
+  --text-accent: #94a3b8;
+  
+  --bg-primary: rgba(15, 23, 42, 0.95);
+  --bg-secondary: rgba(30, 41, 59, 0.8);
+  --bg-card: rgba(51, 65, 85, 0.6);
+  
+  --border-primary: rgba(255, 255, 255, 0.1);
+  --border-secondary: rgba(255, 255, 255, 0.2);
+  --border-accent: rgba(255, 255, 255, 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  @theme inline {
+    --color-background: #f8fafc;
+    --color-foreground: #0f172a;
+    --color-card: #ffffff;
+    --color-card-foreground: #1e293b;
+    --color-popover: #ffffff;
+    --color-popover-foreground: #1e293b;
+    --color-primary: #6366f1;
+    --color-primary-foreground: #ffffff;
+    --color-secondary: #f1f5f9;
+    --color-secondary-foreground: #475569;
+    --color-muted: #f8fafc;
+    --color-muted-foreground: #64748b;
+    --color-accent: #e0e7ff;
+    --color-accent-foreground: #3730a3;
+    --color-destructive: #ef4444;
+    --color-destructive-foreground: #ffffff;
+    --color-border: #e2e8f0;
+    --color-input: #ffffff;
+    --color-ring: #6366f1;
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-info: #3b82f6;
+    --color-chart-1: #6366f1;
+    --color-chart-2: #06b6d4;
+    --color-chart-3: #10b981;
+    --color-chart-4: #f59e0b;
+    --color-chart-5: #ef4444;
   }
 }
 
+/* Base styles with futuristic touches */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv05", "cv06", "cv07", "cv08";
+  scroll-behavior: smooth;
+}
+
+/* Modern scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent-foreground));
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--color-accent-foreground), var(--color-primary));
+}
+
+/* Enhanced focus styles */
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Futuristic sidebar styling */
+[data-sidebar="sidebar"] {
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%) !important;
+  border-right: 1px solid rgba(99, 102, 241, 0.2) !important;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+[data-sidebar="sidebar"] * {
+  color: #ffffff !important;
+}
+
+[data-sidebar="sidebar"] .sidebar-group-label {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.75rem !important;
+}
+
+[data-sidebar="sidebar"] .sidebar-menu-button {
+  border-radius: 0.5rem !important;
+  margin: 0.125rem 0 !important;
+  transition: all 0.2s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+[data-sidebar="sidebar"] .sidebar-menu-button::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1)) !important;
+  opacity: 0 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+[data-sidebar="sidebar"] .sidebar-menu-button:hover::before {
+  opacity: 1 !important;
+}
+
+[data-sidebar="sidebar"] .sidebar-menu-button[data-active="true"] {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2)) !important;
+  border-left: 3px solid var(--color-primary) !important;
+}
+
+/* Main content area */
+main {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Glass effect for cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Enhanced Select styling */
+button[role="combobox"] {
+  background: var(--color-input) !important;
+  border: 2px solid var(--color-border) !important;
+  border-radius: var(--radius) !important;
+  padding: 0.625rem 1rem !important;
+  font-size: 0.875rem !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: var(--shadow-sm) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+button[role="combobox"]:hover {
+  border-color: var(--color-ring) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px) !important;
+}
+
+button[role="combobox"]:focus {
+  border-color: var(--color-ring) !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Select dropdown styling */
+div[role="listbox"] {
+  background: var(--color-card) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow-lg) !important;
+  padding: 0.5rem !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+div[role="option"] {
+  padding: 0.625rem 0.875rem !important;
+  border-radius: calc(var(--radius) - 4px) !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  font-size: 0.875rem !important;
+}
+
+div[role="option"]:hover {
+  background: var(--color-accent) !important;
+  transform: translateX(2px) !important;
+}
+
+div[role="option"][data-highlighted] {
+  background: var(--gradient-primary) !important;
+  color: var(--color-primary-foreground) !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+}
+
+/* Modern Checkbox styling */
+input[type="checkbox"] {
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  border: 2px solid var(--color-border) !important;
+  border-radius: 6px !important;
+  background: var(--color-input) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  box-shadow: var(--shadow-sm) !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+}
+
+input[type="checkbox"]:hover {
+  border-color: var(--color-ring) !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15) !important;
+  transform: scale(1.05) !important;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--gradient-primary) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+}
+
+input[type="checkbox"]:checked::after {
+  content: "✓" !important;
+  position: absolute !important;
+  color: var(--color-primary-foreground) !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+  animation: checkmark 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+@keyframes checkmark {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+input[type="checkbox"]:focus {
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+  outline: none !important;
+}
+
+input[type="checkbox"]:indeterminate {
+  background: var(--gradient-secondary) !important;
+  border-color: var(--color-info) !important;
+}
+
+input[type="checkbox"]:indeterminate::after {
+  content: "−" !important;
+  position: absolute !important;
+  color: var(--color-primary-foreground) !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  animation: checkmark 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Numeric input improvements */
+input[type="number"] {
+  background: var(--color-input) !important;
+  border: 2px solid var(--color-border) !important;
+  border-radius: var(--radius) !important;
+  padding: 0.625rem 1rem !important;
+  font-size: 0.875rem !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  text-align: right !important;
+  font-family: 'Courier New', monospace !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.025em !important;
+  min-height: 2.5rem !important;
+}
+
+input[type="number"]:hover {
+  border-color: var(--color-ring) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+input[type="number"]:focus {
+  border-color: var(--color-ring) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  outline: none !important;
+  background: #ffffff !important;
+}
+
+/* Hide number input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield !important;
+  appearance: textfield !important;
+}
+
+/* Enhanced Input Styling */
+input[type="text"], 
+input[type="email"], 
+input[type="tel"],
+input[type="search"],
+input[type="url"],
+input[type="password"],
+textarea {
+  background: var(--color-input) !important;
+  border: 2px solid var(--color-border) !important;
+  border-radius: var(--radius) !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.875rem !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: var(--shadow-sm) !important;
+  line-height: 1.5 !important;
+  min-height: 2.75rem !important;
+  font-weight: 500 !important;
+  position: relative !important;
+}
+
+input[type="text"]:hover, 
+input[type="email"]:hover, 
+input[type="tel"]:hover,
+input[type="search"]:hover,
+input[type="url"]:hover,
+input[type="password"]:hover,
+textarea:hover {
+  border-color: var(--color-ring) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px) !important;
+}
+
+input[type="text"]:focus, 
+input[type="email"]:focus, 
+input[type="tel"]:focus,
+input[type="search"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  border-color: var(--color-ring) !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), var(--shadow-lg) !important;
+  outline: none !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Modern Numeric Input */
+input[type="number"] {
+  background: var(--color-input) !important;
+  border: 2px solid var(--color-border) !important;
+  border-radius: var(--radius) !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.875rem !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: var(--shadow-sm) !important;
+  text-align: right !important;
+  font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.025em !important;
+  min-height: 2.75rem !important;
+  appearance: textfield !important;
+  -moz-appearance: textfield !important;
+  -webkit-appearance: none !important;
+}
+
+input[type="number"]:hover {
+  border-color: var(--color-ring) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px) !important;
+}
+
+input[type="number"]:focus {
+  border-color: var(--color-ring) !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), var(--shadow-lg) !important;
+  outline: none !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Enhanced placeholder styling */
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-muted-foreground) !important;
+  opacity: 0.6 !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+  opacity: 0.4 !important;
+  transform: translateY(-2px) !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Textarea specific improvements */
+textarea {
+  min-height: 4rem !important;
+  resize: vertical !important;
+  padding: 0.875rem 1rem !important;
+  line-height: 1.6 !important;
+  font-family: inherit !important;
+}
+
+/* Futuristic Button Styling */
+button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.025em !important;
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: var(--radius) !important;
+}
+
+button::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+  transition: left 0.5s ease !important;
+}
+
+button:hover::before {
+  left: 100% !important;
+}
+
+button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+button:active {
+  transform: translateY(0) !important;
+}
+
+/* Primary button gradient */
+button[data-variant="primary"] {
+  background: var(--gradient-primary) !important;
+  color: var(--color-primary-foreground) !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+}
+
+button[data-variant="primary"]:hover {
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4) !important;
+}
+
+/* Futuristic input styles con mejor contraste */
+.futuristic-input {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 2px solid rgba(59, 130, 246, 0.4) !important;
+  border-radius: 0.5rem !important;
+  color: #f1f5f9 !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15) !important;
+  font-weight: 500 !important;
+}
+
+.futuristic-input::placeholder {
+  color: #94a3b8 !important;
+  opacity: 0.8 !important;
+}
+
+.futuristic-input:hover {
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.25) !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+}
+
+.futuristic-input:focus {
+  border-color: rgba(59, 130, 246, 0.8) !important;
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.35) !important;
+  outline: none !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+  color: #ffffff !important;
+}
+
+/* Futuristic select styles con mejor contraste */
+.futuristic-select {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 2px solid rgba(59, 130, 246, 0.4) !important;
+  border-radius: 0.5rem !important;
+  color: #f1f5f9 !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15) !important;
+  font-weight: 500 !important;
+}
+
+.futuristic-select:hover {
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.25) !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+}
+
+.futuristic-select:focus {
+  border-color: rgba(59, 130, 246, 0.8) !important;
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.35) !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+  color: #ffffff !important;
+}
+
+/* Glassmorphism effect mejorado */
+.glassmorphism {
+  background: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Checkbox grid layout */
+.checkbox-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  gap: 0.75rem !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  padding: 1rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0.5rem !important;
+  background: rgba(15, 23, 42, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Checkbox item styling */
+.checkbox-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.5rem !important;
+  border-radius: 0.375rem !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+}
+
+.checkbox-item:hover {
+  background: rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Enhanced table styles */
+.Table {
+  background: rgba(15, 23, 42, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 0.5rem !important;
+  overflow: hidden !important;
+}
+
+/* Enhanced button hover effects */
+.btn-futuristic {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+  border: none !important;
+  color: white !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+.btn-futuristic:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4) !important;
+}
+
+.btn-futuristic:before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+  transition: left 0.5s ease !important;
+}
+
+.btn-futuristic:hover:before {
+  left: 100% !important;
+}
+
+/* Custom scrollbar for dark theme */
+.checkbox-grid::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.checkbox-grid::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.3) !important;
+  border-radius: 3px !important;
+}
+
+.checkbox-grid::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.5) !important;
+  border-radius: 3px !important;
+}
+
+.checkbox-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.7) !important;
+}
+
+/* Enhanced checkbox styling for dark theme */
+input[type="checkbox"] {
+  appearance: none !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  border: 2px solid rgba(59, 130, 246, 0.5) !important;
+  border-radius: 0.25rem !important;
+  background: rgba(15, 23, 42, 0.6) !important;
+  position: relative !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+input[type="checkbox"]:hover {
+  border-color: rgba(59, 130, 246, 0.8) !important;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+input[type="checkbox"]:checked {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+  border-color: rgba(59, 130, 246, 1) !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5) !important;
+}
+
+input[type="checkbox"]:checked::after {
+  content: "✓" !important;
+  position: absolute !important;
+  color: white !important;
+  font-size: 0.875rem !important;
+  font-weight: bold !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Progress bar enhancements */
+.progress-bar {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border-radius: 1rem !important;
+  overflow: hidden !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #22c55e, #3b82f6) !important;
+  height: 100% !important;
+  border-radius: 1rem !important;
+  transition: width 0.5s ease !important;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5) !important;
+}
+
+/* Badge improvements */
+.badge-futuristic {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2)) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  color: rgba(59, 130, 246, 1) !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Table enhancements */
+.table-futuristic {
+  background: rgba(15, 23, 42, 0.3) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0.5rem !important;
+}
+
+.table-futuristic th {
+  background: rgba(59, 130, 246, 0.1) !important;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
+  font-weight: 600 !important;
+  color: rgba(59, 130, 246, 1) !important;
+}
+
+.table-futuristic td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.table-futuristic tr:hover {
+  background: rgba(59, 130, 246, 0.05) !important;
+}
+
+/* Clases mejoradas para contraste de texto */
+.text-primary-enhanced {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+  font-weight: 600 !important;
+}
+
+.text-secondary-enhanced {
+  color: #e2e8f0 !important;
+  font-weight: 500 !important;
+}
+
+.text-muted-enhanced {
+  color: #cbd5e1 !important;
+  font-weight: 400 !important;
+}
+
+.text-accent-enhanced {
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+}
+
+/* Números y valores monetarios */
+.text-money {
+  color: #22d3ee !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 5px rgba(34, 211, 238, 0.3) !important;
+}
+
+.text-number {
+  color: #a78bfa !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 600 !important;
+  text-shadow: 0 0 5px rgba(167, 139, 250, 0.3) !important;
+}
+
+/* Labels mejorados */
+.label-enhanced {
+  color: #f1f5f9 !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.75rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* Badges con mejor contraste */
+.badge-success {
+  background: rgba(34, 197, 94, 0.2) !important;
+  color: #22c55e !important;
+  border: 1px solid rgba(34, 197, 94, 0.4) !important;
+  font-weight: 600 !important;
+  text-shadow: 0 0 3px rgba(34, 197, 94, 0.5) !important;
+}
+
+.badge-warning {
+  background: rgba(245, 158, 11, 0.2) !important;
+  color: #f59e0b !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  font-weight: 600 !important;
+  text-shadow: 0 0 3px rgba(245, 158, 11, 0.5) !important;
+}
+
+.badge-error {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+  font-weight: 600 !important;
+  text-shadow: 0 0 3px rgba(239, 68, 68, 0.5) !important;
+}
+
+.badge-info {
+  background: rgba(59, 130, 246, 0.2) !important;
+  color: #3b82f6 !important;
+  border: 1px solid rgba(59, 130, 246, 0.4) !important;
+  font-weight: 600 !important;
+  text-shadow: 0 0 3px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Tablas con mejor contraste */
+.table-header-enhanced {
+  background: rgba(15, 23, 42, 0.8) !important;
+  color: #f1f5f9 !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 2px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+.table-cell-enhanced {
+  color: #e2e8f0 !important;
+  font-weight: 500 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 1rem !important;
+}
+
+.table-row-hover:hover {
+  background: rgba(59, 130, 246, 0.1) !important;
+  border-left: 3px solid rgba(59, 130, 246, 0.6) !important;
+  transform: translateX(2px) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Estados de categorías con mejor visibilidad */
+.category-legal {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #fca5a5 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+}
+
+.category-beneficio {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #93c5fd !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+.category-operativo {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #fcd34d !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+}
+
+.category-otro {
+  background: rgba(156, 163, 175, 0.15) !important;
+  color: #d1d5db !important;
+  border: 1px solid rgba(156, 163, 175, 0.3) !important;
+}
+
+/* Mejoras para estados de proyecto */
+.status-activo {
+  background: rgba(34, 197, 94, 0.15) !important;
+  color: #4ade80 !important;
+  border: 1px solid rgba(34, 197, 94, 0.3) !important;
+}
+
+.status-planificacion {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #60a5fa !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+.status-pausado {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #fbbf24 !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+}
+
+.status-completado {
+  background: rgba(156, 163, 175, 0.15) !important;
+  color: #d1d5db !important;
+  border: 1px solid rgba(156, 163, 175, 0.3) !important;
+}
+
+.status-cancelado {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #f87171 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Clases adicionales para mejorar contraste y legibilidad */
+.text-field-enhanced {
+  color: #f8fafc !important;
+  background: rgba(30, 41, 59, 0.8) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  font-weight: 500 !important;
+}
+
+.text-field-enhanced:focus {
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+.text-field-enhanced::placeholder {
+  color: rgba(148, 163, 184, 0.7) !important;
+}
+
+/* Mejores valores numéricos y monetarios */
+.value-display {
+  color: #22d3ee !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 8px rgba(34, 211, 238, 0.4) !important;
+  background: rgba(34, 211, 238, 0.1) !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.375rem !important;
+  border: 1px solid rgba(34, 211, 238, 0.2) !important;
+}
+
+.percentage-display {
+  color: #a78bfa !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 700 !important;
+  text-shadow: 0 0 8px rgba(167, 139, 250, 0.4) !important;
+  background: rgba(167, 139, 250, 0.1) !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.375rem !important;
+  border: 1px solid rgba(167, 139, 250, 0.2) !important;
+}
+
+/* Títulos y headers más visibles */
+.section-title {
+  color: #f1f5f9 !important;
+  font-weight: 700 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.card-title-enhanced {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+  font-size: 1.125rem !important;
+  letter-spacing: 0.025em !important;
+}
+
+/* Estados mejorados para mejor legibilidad */
+.status-badge {
+  font-weight: 700 !important;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid transparent !important;
+  padding: 0.375rem 0.75rem !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.875rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Botones con mejor contraste */
+.btn-enhanced {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-enhanced:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Inputs con mejor contraste */
+.input-enhanced {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 2px solid rgba(59, 130, 246, 0.3) !important;
+  color: #f8fafc !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  padding: 0.625rem 1rem !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.input-enhanced:focus {
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+}
+
+.input-enhanced::placeholder {
+  color: rgba(148, 163, 184, 0.6) !important;
+  font-style: italic !important;
+}
+
+/* Selects con mejor contraste */
+.select-enhanced {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 2px solid rgba(59, 130, 246, 0.3) !important;
+  color: #f8fafc !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  padding: 0.625rem 1rem !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.select-enhanced:focus {
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+}
+
+/* Tablas con mejor contraste */
+.table-enhanced {
+  background: rgba(15, 23, 42, 0.4) !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(59, 130, 246, 0.2) !important;
+}
+
+.table-enhanced th {
+  background: rgba(30, 41, 59, 0.8) !important;
+  color: #f1f5f9 !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 1rem !important;
+  border-bottom: 2px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+.table-enhanced td {
+  background: rgba(15, 23, 42, 0.6) !important;
+  color: #e2e8f0 !important;
+  font-weight: 500 !important;
+  padding: 1rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.table-enhanced tr:hover td {
+  background: rgba(59, 130, 246, 0.1) !important;
+  border-left: 3px solid rgba(59, 130, 246, 0.6) !important;
+}
+
+/* Utilidades para accesibilidad */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.focus-visible {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+  border-radius: 0.375rem !important;
+}
+
+/* Mejoras para navegación por teclado */
+*:focus-visible {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+  border-radius: 0.375rem !important;
+}
+
+/* Animaciones suaves para transiciones */
+.smooth-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Mejoras para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .auto-contrast {
+    color: #f8fafc !important;
+    background: rgba(15, 23, 42, 0.8) !important;
+  }
+}
+
+/* Mejoras para contraste alto */
+@media (prefers-contrast: high) {
+  .text-primary-enhanced {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  .label-enhanced {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  .input-enhanced, .select-enhanced {
+    border-width: 3px !important;
+    border-color: #3b82f6 !important;
+  }
 }
