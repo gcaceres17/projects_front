@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { StatCard } from "@/components/ui/stat-card"
 import { useApp } from "@/components/app-provider"
-import { Users, FolderOpen, DollarSign, TrendingUp, Clock, AlertTriangle, CheckCircle, Target, Activity, Zap, Brain, Sparkles } from "lucide-react"
+import { Users, FolderOpen, DollarSign, TrendingUp, Clock, AlertTriangle, CheckCircle, Target, Activity, Brain, Sparkles } from "lucide-react"
 
 export default function Dashboard() {
   const { state } = useApp()
@@ -249,7 +249,7 @@ export default function Dashboard() {
                       }
                     }
 
-                    function calcularCostoTotal(colaborador: any) {
+                    function calcularCostoTotal(colaborador: typeof state.colaboradores[0]) {
                       const costosRigidosAplicados = state.costosRigidos
                         .filter((costo) => colaborador.costosRigidos.includes(costo.id))
                         .reduce((total, costo) => {

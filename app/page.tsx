@@ -78,7 +78,7 @@ export default function Dashboard() {
       return total + (horasAsignadas / colaborador.horasMensuales) * 100
     }, 0) / state.colaboradores.length || 0
 
-  const calcularCostoTotal = (colaborador: any) => {
+  const calcularCostoTotal = (colaborador: typeof state.colaboradores[0]) => {
     const costosRigidosAplicados = state.costosRigidos
       .filter((costo) => colaborador.costosRigidos.includes(costo.id))
       .reduce((total, costo) => {

@@ -12,7 +12,7 @@ interface PDFReportGeneratorProps {
 export function PDFReportGenerator({ proyecto }: PDFReportGeneratorProps) {
   const { state } = useApp()
 
-  const calcularCostoColaborador = (pc: any) => {
+  const calcularCostoColaborador = (pc: typeof proyecto.colaboradores[0]) => {
     const colaborador = state.colaboradores.find((c) => c.id === pc.colaboradorId)
     if (!colaborador) return 0
 

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { StatCard } from "@/components/ui/stat-card"
 import { useApp } from "@/components/app-provider"
-import { FileText, Download, Calculator, DollarSign, Clock, Users, TrendingUp, Sparkles, Target, Award } from "lucide-react"
+import { FileText, Download, Calculator, DollarSign, Users, TrendingUp, Sparkles, Target, Award } from "lucide-react"
 
 export default function Cotizaciones() {
   const searchParams = useSearchParams()

@@ -515,8 +515,16 @@ button[data-variant="primary"]:hover {
   box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4) !important;
 }
 
-/* Futuristic input styles con mejor contraste */
-.futuristic-input {
+/* Futuristic input styles con mejor contraste y mayor especificidad */
+.futuristic-input,
+input.futuristic-input[type="text"],
+input.futuristic-input[type="number"],
+input.futuristic-input[type="email"],
+input.futuristic-input[type="tel"],
+input.futuristic-input[type="search"],
+input.futuristic-input[type="url"],
+input.futuristic-input[type="password"],
+textarea.futuristic-input {
   background: rgba(15, 23, 42, 0.8) !important;
   border: 2px solid rgba(59, 130, 246, 0.4) !important;
   border-radius: 0.5rem !important;
@@ -525,29 +533,37 @@ button[data-variant="primary"]:hover {
   transition: all 0.3s ease !important;
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.15) !important;
   font-weight: 500 !important;
+  text-align: left !important;
 }
 
-.futuristic-input::placeholder {
+.futuristic-input::placeholder,
+input.futuristic-input[type="number"]::placeholder {
   color: #94a3b8 !important;
   opacity: 0.8 !important;
 }
 
-.futuristic-input:hover {
+.futuristic-input:hover,
+input.futuristic-input[type="number"]:hover {
   border-color: rgba(59, 130, 246, 0.6) !important;
   box-shadow: 0 0 30px rgba(59, 130, 246, 0.25) !important;
   background: rgba(15, 23, 42, 0.9) !important;
+  transform: none !important;
 }
 
-.futuristic-input:focus {
+.futuristic-input:focus,
+input.futuristic-input[type="number"]:focus {
   border-color: rgba(59, 130, 246, 0.8) !important;
   box-shadow: 0 0 40px rgba(59, 130, 246, 0.35) !important;
   outline: none !important;
   background: rgba(15, 23, 42, 0.95) !important;
   color: #ffffff !important;
+  transform: none !important;
 }
 
-/* Futuristic select styles con mejor contraste */
-.futuristic-select {
+/* Futuristic select styles con mejor contraste y mayor especificidad */
+.futuristic-select,
+button.futuristic-select[role="combobox"],
+[data-radix-select-trigger].futuristic-select {
   background: rgba(15, 23, 42, 0.8) !important;
   border: 2px solid rgba(59, 130, 246, 0.4) !important;
   border-radius: 0.5rem !important;
@@ -558,20 +574,114 @@ button[data-variant="primary"]:hover {
   font-weight: 500 !important;
 }
 
-.futuristic-select:hover {
+.futuristic-select:hover,
+button.futuristic-select[role="combobox"]:hover {
   border-color: rgba(59, 130, 246, 0.6) !important;
   box-shadow: 0 0 30px rgba(59, 130, 246, 0.25) !important;
   background: rgba(15, 23, 42, 0.9) !important;
+  transform: none !important;
 }
 
-.futuristic-select:focus {
+.futuristic-select:focus,
+button.futuristic-select[role="combobox"]:focus {
   border-color: rgba(59, 130, 246, 0.8) !important;
   box-shadow: 0 0 40px rgba(59, 130, 246, 0.35) !important;
   background: rgba(15, 23, 42, 0.95) !important;
   color: #ffffff !important;
+  transform: none !important;
 }
 
-/* Glassmorphism effect mejorado */
+/* Currency input específico para inputs monetarios */
+.currency-input,
+input.currency-input[type="number"] {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 2px solid rgba(59, 130, 246, 0.4) !important;
+  border-radius: 0.5rem !important;
+  color: #f1f5f9 !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15) !important;
+  font-weight: 500 !important;
+  text-align: right !important;
+  font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+  letter-spacing: 0.025em !important;
+  min-height: 2.75rem !important;
+  appearance: textfield !important;
+  -moz-appearance: textfield !important;
+  -webkit-appearance: none !important;
+}
+
+.currency-input:hover,
+input.currency-input[type="number"]:hover {
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.25) !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+  transform: none !important;
+}
+
+.currency-input:focus,
+input.currency-input[type="number"]:focus {
+  border-color: rgba(59, 130, 246, 0.8) !important;
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.35) !important;
+  outline: none !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+  color: #ffffff !important;
+  transform: none !important;
+}
+
+/* Hide spinners for currency inputs */
+.currency-input::-webkit-outer-spin-button,
+.currency-input::-webkit-inner-spin-button,
+input.currency-input[type="number"]::-webkit-outer-spin-button,
+input.currency-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+/* Override global number input styles for futuristic inputs */
+input[type="number"].futuristic-input {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 2px solid rgba(59, 130, 246, 0.4) !important;
+  border-radius: 0.5rem !important;
+  color: #f1f5f9 !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15) !important;
+  font-weight: 500 !important;
+  text-align: left !important;
+  font-family: inherit !important;
+  letter-spacing: normal !important;
+  min-height: 2.75rem !important;
+  appearance: textfield !important;
+  -moz-appearance: textfield !important;
+  -webkit-appearance: none !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.875rem !important;
+}
+
+input[type="number"].futuristic-input:hover {
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.25) !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+  transform: none !important;
+}
+
+input[type="number"].futuristic-input:focus {
+  border-color: rgba(59, 130, 246, 0.8) !important;
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.35) !important;
+  outline: none !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+  color: #ffffff !important;
+  transform: none !important;
+}
+
+/* Hide spinners for futuristic number inputs */
+input[type="number"].futuristic-input::-webkit-outer-spin-button,
+input[type="number"].futuristic-input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
 .glassmorphism {
   background: rgba(15, 23, 42, 0.6) !important;
   backdrop-filter: blur(16px) !important;

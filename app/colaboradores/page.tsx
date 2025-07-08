@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { StatCard } from "@/components/ui/stat-card"
 import { useApp, type Colaborador } from "@/components/app-provider"
-import { Trash2, Edit, UserPlus, Code, Award, Users, Clock, DollarSign, TrendingUp, Star, Shield, Sparkles } from "lucide-react"
+import { Trash2, Edit, UserPlus, Code, Award, Users, Clock, DollarSign, Star, Shield } from "lucide-react"
 
 export default function Colaboradores() {
   const { state, dispatch } = useApp()
@@ -168,17 +168,17 @@ export default function Colaboradores() {
   const getNivelColor = (nivel: string) => {
     switch (nivel) {
       case "junior":
-        return "bg-green-100 text-green-800"
+        return "badge-success"
       case "semi-senior":
-        return "bg-blue-100 text-blue-800"
+        return "badge-info"
       case "senior":
-        return "bg-purple-100 text-purple-800"
+        return "bg-purple-500/20 text-purple-300 border border-purple-500/40"
       case "lead":
-        return "bg-orange-100 text-orange-800"
+        return "badge-warning"
       case "architect":
-        return "bg-red-100 text-red-800"
+        return "badge-error"
       default:
-        return "bg-gray-100 text-gray-800"
+        return "bg-gray-500/20 text-gray-300 border border-gray-500/40"
     }
   }
 
@@ -195,7 +195,7 @@ export default function Colaboradores() {
               Gestión de Colaboradores
             </h1>
           </div>
-          <p className="text-gray-300 text-lg">
+          <p className="text-primary-enhanced text-lg">
             Administra el equipo de desarrollo con información detallada y métricas avanzadas
           </p>
         </div>
@@ -290,7 +290,7 @@ export default function Colaboradores() {
                     <Label htmlFor="nivel" className="label-enhanced">Nivel</Label>
                     <Select
                       value={formData.nivel}
-                      onValueChange={(value: any) => setFormData({ ...formData, nivel: value })}
+                      onValueChange={(value: "junior" | "semi-senior" | "senior" | "lead" | "architect") => setFormData({ ...formData, nivel: value })}
                     >
                       <SelectTrigger className="futuristic-select">
                         <SelectValue />
@@ -363,17 +363,17 @@ export default function Colaboradores() {
               <div className="space-y-4">
                 <Label className="flex items-center gap-2 label-enhanced">
                   <Code className="h-5 w-5 text-green-400" />
-                  <span className="text-lg font-semibold">Tecnologías y Herramientas</span>
+                  <span className="text-lg font-semibold text-primary-enhanced">Tecnologías y Herramientas</span>
                 </Label>
-                <div className="grid gap-2 md:grid-cols-4 max-h-40 overflow-y-auto p-2 border rounded-lg">
+                <div className="grid gap-3 md:grid-cols-4 max-h-40 overflow-y-auto p-4 border border-gray-600 rounded-lg bg-slate-800/50">
                 {tecnologiasDisponibles.map((tecnologia) => (
-                  <div key={tecnologia} className="flex items-center space-x-2">
+                  <div key={tecnologia} className="flex items-center space-x-2 p-2 rounded-md hover:bg-slate-700/50 transition-colors">
                     <Checkbox
                       id={`tech-${tecnologia}`}
                       checked={formData.tecnologias.includes(tecnologia)}
                       onCheckedChange={(checked) => handleTecnologiaChange(tecnologia, checked as boolean)}
                     />
-                    <Label htmlFor={`tech-${tecnologia}`} className="text-sm">
+                    <Label htmlFor={`tech-${tecnologia}`} className="text-sm text-primary-enhanced cursor-pointer">
                       {tecnologia}
                     </Label>
                   </div>
@@ -383,23 +383,23 @@ export default function Colaboradores() {
 
             {/* Costos Rígidos */}
             <div className="space-y-3">
-              <Label className="flex items-center gap-2">
-                <Award className="h-4 w-4" />
-                Costos Rígidos Aplicables
+              <Label className="flex items-center gap-2 label-enhanced">
+                <Award className="h-4 w-4 text-purple-400" />
+                <span className="text-primary-enhanced">Costos Rígidos Aplicables</span>
               </Label>
               <div className="grid gap-2 md:grid-cols-2">
                 {state.costosRigidos.map((costo) => (
-                  <div key={costo.id} className="flex items-center space-x-2 p-2 border rounded-lg">
+                  <div key={costo.id} className="flex items-center space-x-2 p-3 border border-gray-600 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 transition-colors">
                     <Checkbox
                       id={costo.id}
                       checked={formData.costosRigidos.includes(costo.id)}
                       onCheckedChange={(checked) => handleCostoRigidoChange(costo.id, checked as boolean)}
                     />
                     <div className="flex-1">
-                      <Label htmlFor={costo.id} className="text-sm font-medium">
+                      <Label htmlFor={costo.id} className="text-sm font-medium text-primary-enhanced cursor-pointer">
                         {costo.nombre}
                       </Label>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-muted-enhanced">
                         {costo.tipo === "fijo" ? `₲${costo.valor.toLocaleString()}` : `${costo.valor}%`} -{" "}
                         {costo.descripcion}
                       </p>
@@ -410,11 +410,12 @@ export default function Colaboradores() {
             </div>
 
             <div className="flex gap-2">
-              <Button type="submit" className="flex-1">
+              <Button type="submit" className="flex-1 btn-futuristic">
+                <UserPlus className="h-4 w-4 mr-2" />
                 {editingId ? "Actualizar" : "Crear"} Colaborador
               </Button>
               {editingId && (
-                <Button type="button" variant="outline" onClick={cancelEdit}>
+                <Button type="button" variant="ghost" onClick={cancelEdit} className="text-gray-400 hover:text-gray-300 hover:bg-gray-500/10">
                   Cancelar
                 </Button>
               )}
@@ -424,34 +425,47 @@ export default function Colaboradores() {
       </Card>
 
       {/* Lista de Colaboradores */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Equipo de Desarrollo</CardTitle>
+      <Card className="glassmorphism border-purple-500/30 hover:border-purple-400/50 transition-all duration-300">
+        <CardHeader className="bg-gradient-to-r from-purple-500/10 to-pink-500/10">
+          <CardTitle className="flex items-center gap-3 text-white">
+            <div className="p-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500">
+              <Users className="h-5 w-5 text-white" />
+            </div>
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Equipo de Desarrollo
+            </span>
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="table-header-enhanced">Colaborador</TableHead>
-                <TableHead className="table-header-enhanced">Rol</TableHead>
-                <TableHead className="table-header-enhanced">Nivel</TableHead>
-                <TableHead className="table-header-enhanced">Salario</TableHead>
-                <TableHead className="table-header-enhanced">Costo Total</TableHead>
-                <TableHead className="table-header-enhanced">Tecnologías</TableHead>
-                <TableHead className="table-header-enhanced text-right">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {state.colaboradores.map((colaborador) => (
-                <TableRow key={colaborador.id} className="table-row-hover">
-                  <TableCell className="table-cell-enhanced">
-                    <div>
-                      <div className="text-primary-enhanced">{colaborador.nombre}</div>
-                      <div className="text-sm text-muted-enhanced">
-                        {colaborador.antiguedad} años • {colaborador.horasMensuales}h/mes • {colaborador.disponibilidad}%
+        <CardContent className="p-6">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-gray-700">
+                  <TableHead className="table-header-enhanced">Colaborador</TableHead>
+                  <TableHead className="table-header-enhanced">Rol</TableHead>
+                  <TableHead className="table-header-enhanced">Nivel</TableHead>
+                  <TableHead className="table-header-enhanced">Salario</TableHead>
+                  <TableHead className="table-header-enhanced">Costo Total</TableHead>
+                  <TableHead className="table-header-enhanced">Tecnologías</TableHead>
+                  <TableHead className="table-header-enhanced text-right">Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {state.colaboradores.map((colaborador) => (
+                  <TableRow key={colaborador.id} className="border-gray-700 table-row-hover">
+                    <TableCell className="table-cell-enhanced">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500">
+                          <UserPlus className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <div className="text-primary-enhanced font-medium">{colaborador.nombre}</div>
+                          <div className="text-sm text-muted-enhanced">
+                            {colaborador.antiguedad} años • {colaborador.horasMensuales}h/mes • {colaborador.disponibilidad}%
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </TableCell>
+                    </TableCell>
                   <TableCell className="table-cell-enhanced text-secondary-enhanced">{colaborador.rol}</TableCell>
                   <TableCell className="table-cell-enhanced">
                     <Badge className={getNivelColor(colaborador.nivel)}>{colaborador.nivel}</Badge>
@@ -476,22 +490,22 @@ export default function Colaboradores() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="table-cell-enhanced">
                     <div className="flex gap-2 justify-end">
                       <Button
                         size="sm"
-                        variant="outline"
+                        variant="ghost"
                         onClick={() => handleEdit(colaborador)}
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
                       >
                         <Edit className="h-4 w-4" />
                         <span className="sr-only">Editar</span>
                       </Button>
                       <Button
                         size="sm"
-                        variant="outline"
+                        variant="ghost"
                         onClick={() => handleDelete(colaborador.id)}
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
                       >
                         <Trash2 className="h-4 w-4" />
                         <span className="sr-only">Eliminar</span>
@@ -501,7 +515,16 @@ export default function Colaboradores() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
+            </Table>
+
+            {state.colaboradores.length === 0 && (
+              <div className="text-center py-12">
+                <Users className="h-12 w-12 text-slate-500 mx-auto mb-4" />
+                <p className="text-primary-enhanced text-lg">No hay colaboradores registrados</p>
+                <p className="text-secondary-enhanced text-sm">Agrega tu primer colaborador para comenzar</p>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
       </div>

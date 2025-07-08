@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChart3, Users, DollarSign, FolderOpen, FileText, PieChart, Building2, Zap, Target, TrendingUp, Activity, Sparkles } from "lucide-react"
+import { BarChart3, Users, DollarSign, FolderOpen, FileText, Building2, Zap, Target, TrendingUp, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 

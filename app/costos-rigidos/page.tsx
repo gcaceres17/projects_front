@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { StatCard } from "@/components/ui/stat-card"
 import { useApp, type CostoRigido } from "@/components/app-provider"
-import { Trash2, Edit, Plus, Calculator, DollarSign, TrendingUp, Percent, Shield, Sparkles } from "lucide-react"
+import { Trash2, Edit, Plus, Calculator, DollarSign, Percent, Shield, Sparkles } from "lucide-react"
 
 export default function CostosRigidos() {
   const { state, dispatch } = useApp()
