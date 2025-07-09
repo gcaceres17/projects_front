@@ -27,7 +27,20 @@ export default function LoginPage() {
       await login(email, password);
       router.push('/dashboard');
     } catch (error: any) {
-      setError(error.response?.data?.detail || 'Error al iniciar sesión');
+      console.error('Login error:', error);
+      
+      if (error.response?.data?.detail) {
+        if (Array.isArray(error.response.data.detail)) {
+          // Si es un array de errores de validación
+          setError(error.response.data.detail.map((e: any) => e.msg).join(', '));
+        } else {
+          setError(error.response.data.detail);
+        }
+      } else if (error.message) {
+        setError(error.message);
+      } else {
+        setError('Error al iniciar sesión');
+      }
     } finally {
       setIsLoading(false);
     }

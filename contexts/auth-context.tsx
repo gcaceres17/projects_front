@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const initAuth = async () => {
       try {
-        if (authService.isAuthenticated()) {
+        if (typeof window !== 'undefined' && authService.isAuthenticated()) {
           const userData = await authService.getCurrentUser();
           setUser(userData);
           localStorage.setItem('user', JSON.stringify(userData));
@@ -50,9 +50,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     try {
       const response = await authService.login({ email, password });
-      localStorage.setItem('access_token', response.access_token);
-      localStorage.setItem('user', JSON.stringify(response.user));
-      setUser(response.user);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('access_token', response.access_token);
+      }
+      
+      // Obtener datos del usuario después del login
+      const userData = await authService.getCurrentUser();
+      setUser(userData);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('user', JSON.stringify(userData));
+      }
     } catch (error) {
       throw error;
     }
@@ -65,7 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const refetchUser = async () => {
     try {
-      if (authService.isAuthenticated()) {
+      if (typeof window !== 'undefined' && authService.isAuthenticated()) {
         const userData = await authService.getCurrentUser();
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));

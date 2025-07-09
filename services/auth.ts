@@ -15,27 +15,24 @@ export interface User {
   id: number;
   email: string;
   nombre: string;
-  is_active: boolean;
-  is_admin: boolean;
+  apellido: string;
+  activo: boolean;
+  es_admin: boolean;
+  fecha_creacion: string;
+  fecha_actualizacion: string;
+  fecha_ultimo_acceso?: string;
 }
 
 export interface LoginResponse {
   access_token: string;
   token_type: string;
-  expires_in: number;
-  user: User;
 }
 
 export const authService = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
-    const formData = new FormData();
-    formData.append('username', credentials.email);
-    formData.append('password', credentials.password);
-
-    const response = await api.post('/auth/login', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+    const response = await api.post('/auth/login', {
+      email: credentials.email,
+      password: credentials.password
     });
     return response.data;
   },
@@ -56,16 +53,24 @@ export const authService = {
   },
 
   logout() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user');
+    }
   },
 
   isAuthenticated(): boolean {
+    if (typeof window === 'undefined') return false;
     return !!localStorage.getItem('access_token');
   },
 
   getUser(): User | null {
+    if (typeof window === 'undefined') return null;
     const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+    try {
+      return userStr ? JSON.parse(userStr) : null;
+    } catch {
+      return null;
+    }
   }
 };
