@@ -3,9 +3,8 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { AppProvider } from "@/components/app-provider"
-import { AppSidebar } from "@/components/app-sidebar"
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { Header } from "@/components/header"
+import { AuthProvider } from "@/contexts/auth"
+import { AppLayout } from "@/components/app-layout"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,17 +21,13 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
-        <AppProvider>
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-              <Header />
-              <main className="flex-1 overflow-auto">
-                {children}
-              </main>
-            </SidebarInset>
-          </SidebarProvider>
-        </AppProvider>
+        <AuthProvider>
+          <AppProvider>
+            <AppLayout>
+              {children}
+            </AppLayout>
+          </AppProvider>
+        </AuthProvider>
       </body>
     </html>
   )
