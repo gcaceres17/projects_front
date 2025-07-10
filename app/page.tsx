@@ -69,35 +69,16 @@ export default function Dashboard() {
         proyectos: data.proyectos
       };
     } else {
-      // Fallback a datos locales
-      const proyectosActivos = state.proyectos.filter((p) => p.estado === "activo").length
-      const proyectosPlanificacion = state.proyectos.filter((p) => p.estado === "planificacion").length
-      const totalColaboradores = state.colaboradores.length
-
-      const utilizacionPromedio =
-        state.colaboradores.reduce((total, colaborador) => {
-          const horasAsignadas = state.proyectos.reduce((horas, proyecto) => {
-            const asignacion = proyecto.colaboradores.find((pc) => pc.colaboradorId === colaborador.id)
-            return horas + (asignacion?.horasAsignadas || 0)
-          }, 0)
-
-          return total + (horasAsignadas / colaborador.horasMensuales) * 100
-        }, 0) / state.colaboradores.length || 0
-
+      // Sin datos API - mostrar estado vacío/loading
       return {
-        proyectosActivos,
-        proyectosPlanificacion,
-        totalColaboradores,
+        proyectosActivos: 0,
+        proyectosPlanificacion: 0,
+        totalColaboradores: 0,
         cotizacionesPendientes: 0,
         valorCotizaciones: 0,
         clientesActivos: 0,
-        utilizacionPromedio,
-        proyectos: {
-          total: state.proyectos.length,
-          activos: proyectosActivos,
-          completados: state.proyectos.filter((p) => p.estado === "completado").length,
-          porcentaje_completados: state.proyectos.length > 0 ? (state.proyectos.filter((p) => p.estado === "completado").length / state.proyectos.length * 100) : 0
-        }
+        utilizacionPromedio: 0,
+        proyectos: null
       };
     }
   };

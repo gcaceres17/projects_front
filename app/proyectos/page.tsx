@@ -21,10 +21,10 @@ export default function ProyectosPage() {
   const { state, dispatch } = useApp()
   const router = useRouter()
 
-  // Estado para integración con API
-  const [apiProyectos, setApiProyectos] = useState<unknown[]>([]);
-  const [isLoadingApi, setIsLoadingApi] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
+  // Estado para datos de API únicamente
+  const [proyectos, setProyectos] = useState<unknown[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -48,65 +48,50 @@ export default function ProyectosPage() {
   useEffect(() => {
     const loadProyectos = async () => {
       try {
-        setIsLoadingApi(true);
-        setApiError(null);
+        setIsLoading(true);
+        setError(null);
         
-        console.log('Cargando proyectos desde la API...');
-        const proyectos = await proyectosService.list();
-        console.log('Proyectos recibidos de la API:', proyectos);
-        setApiProyectos(proyectos);
+        const proyectosData = await proyectosService.list();
+        setProyectos(proyectosData);
       } catch (error: unknown) {
-        console.log('Error cargando proyectos de la API, usando datos locales:', error);
-        setApiError((error as Error)?.message || 'Error de conexión');
+        const errorMessage = (error as Error)?.message || 'Error de conexión';
+        setError(errorMessage);
+        console.error('Error cargando proyectos:', error);
       } finally {
-        setIsLoadingApi(false);
+        setIsLoading(false);
       }
     };
 
     loadProyectos();
   }, []);
 
-  // Función para obtener proyectos (API + local fallback)
+  // Solo usar proyectos de la API
   const getProyectos = () => {
-    return apiProyectos.length > 0 ? apiProyectos : state.proyectos;
+    return proyectos;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     try {
-      if (apiProyectos.length > 0) {
-        // Usar API
-        const nuevoProyecto = await proyectosService.create({
-          nombre: formData.nombre,
-          descripcion: `Proyecto ${formData.tipo} con metodología ${formData.metodologia}`,
-          presupuesto: 0, // Se calculará
-          estado: 'planificacion',
-          fecha_inicio: new Date().toISOString().split('T')[0],
-          fecha_fin_estimada: new Date(Date.now() + formData.duracionMeses * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          cliente_id: 1, // Temporal - necesitaría selector de cliente
-        });
-        
-        // Recargar proyectos
-        const proyectosActualizados = await proyectosService.list();
-        setApiProyectos(proyectosActualizados);
-        
-        console.log('Proyecto creado en API:', nuevoProyecto);
-      } else {
-        // Fallback a estado local
-        const nuevoProyecto: Proyecto = {
-          id: Date.now().toString(),
-          estado: "planificacion",
-          ...formData,
-        }
-
-        dispatch({
-          type: "ADD_PROYECTO",
-          payload: nuevoProyecto,
-        })
-      }
+      // Solo usar API - no fallback local
+      const nuevoProyecto = await proyectosService.create({
+        nombre: formData.nombre,
+        descripcion: `Proyecto ${formData.tipo} con metodología ${formData.metodologia}`,
+        presupuesto: 0, // Se calculará
+        estado: 'planificacion',
+        fecha_inicio: new Date().toISOString().split('T')[0],
+        fecha_fin_estimada: new Date(Date.now() + formData.duracionMeses * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        cliente_id: 1, // Temporal - necesitaría selector de cliente
+      });
       
-      // Reset form en ambos casos
+      // Recargar proyectos
+      const proyectosActualizados = await proyectosService.list();
+      setProyectos(proyectosActualizados);
+      
+      console.log('Proyecto creado en API:', nuevoProyecto);
+      
+      // Reset form
       setFormData({
         nombre: "",
         duracionMeses: 6,
@@ -127,17 +112,8 @@ export default function ProyectosPage() {
       
     } catch (error) {
       console.error('Error creando proyecto:', error);
-      // Fallback a estado local si falla API
-      const nuevoProyecto: Proyecto = {
-        id: Date.now().toString(),
-        estado: "planificacion",
-        ...formData,
-      }
-
-      dispatch({
-        type: "ADD_PROYECTO",
-        payload: nuevoProyecto,
-      })
+      // Mostrar error al usuario sin fallback
+      alert('Error al crear proyecto. Verifique la conexión con el servidor.');
     }
   }
 
@@ -173,22 +149,18 @@ export default function ProyectosPage() {
   }
 
   const handleDelete = async (id: string) => {
+    if (!confirm('¿Estás seguro de que deseas eliminar este proyecto?')) {
+      return;
+    }
+
     try {
-      if (apiProyectos.length > 0) {
-        // Usar API
-        await proyectosService.delete(parseInt(id));
-        // Recargar proyectos
-        const proyectosActualizados = await proyectosService.list();
-        setApiProyectos(proyectosActualizados);
-        console.log('Proyecto eliminado de la API');
-      } else {
-        // Fallback a estado local
-        dispatch({ type: "DELETE_PROYECTO", payload: id });
-      }
-    } catch (error) {
-      console.error('Error eliminando proyecto:', error);
-      // Fallback a estado local si falla API
-      dispatch({ type: "DELETE_PROYECTO", payload: id });
+      await proyectosService.delete(parseInt(id));
+      // Recargar proyectos
+      const proyectosActualizados = await proyectosService.list();
+      setProyectos(proyectosActualizados);
+    } catch (error: unknown) {
+      const errorMessage = (error as Error)?.message || 'Error eliminando proyecto';
+      alert(`Error: ${errorMessage}`);
     }
   }
 
@@ -211,9 +183,11 @@ export default function ProyectosPage() {
     return costoTotal * (1 + proyecto.margenDeseado / 100)
   }
 
-  const totalProyectos = state.proyectos.length
-  const proyectosActivos = state.proyectos.filter(p => p.estado === 'activo').length
-  const valorTotalCartera = state.proyectos.reduce((total, proyecto) => total + calcularPrecioConMargen(proyecto), 0)
+  const totalProyectos = proyectos.length;
+  const proyectosActivos = proyectos.filter((p: any) => p.estado === 'activo').length;
+  const valorTotalCartera = proyectos.reduce((total: number, proyecto: any) => {
+    return total + (proyecto.presupuesto || 0);
+  }, 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
@@ -235,23 +209,23 @@ export default function ProyectosPage() {
           {/* API Status Indicators */}
           <div className="flex items-center justify-center gap-3 mt-4">
             <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
-              isLoadingApi 
+              isLoading 
                 ? 'bg-yellow-100 text-yellow-700' 
-                : apiProyectos.length > 0
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'bg-gray-100 text-gray-700'
+                : error
+                  ? 'bg-red-100 text-red-700'
+                  : 'bg-green-100 text-green-700'
             }`}>
-              {isLoadingApi ? (
+              {isLoading ? (
                 <>🔄 Cargando API...</>
-              ) : apiProyectos.length > 0 ? (
-                <>✅ API Conectada ({apiProyectos.length} proyectos)</>
+              ) : error ? (
+                <>❌ Error de API</>
               ) : (
-                <>📂 Datos Locales ({state.proyectos.length} proyectos)</>
+                <>✅ API Conectada ({proyectos.length} proyectos)</>
               )}
             </div>
-            {apiError && (
+            {error && (
               <div className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
-                ⚠️ {apiError.substring(0, 30)}...
+                ⚠️ {error.substring(0, 30)}...
               </div>
             )}
           </div>
@@ -591,75 +565,94 @@ export default function ProyectosPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {state.proyectos.map((proyecto) => (
-                    <TableRow key={proyecto.id} className="border-gray-700 table-row-hover">
-                      <TableCell className="table-cell-enhanced">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500">
-                            <FolderOpen className="h-4 w-4 text-white" />
-                          </div>
-                          <div>
-                            <Link href={`/proyectos/${proyecto.id}`} className="text-primary-enhanced hover:text-blue-300 transition-colors">
-                              {proyecto.nombre}
-                            </Link>
-                            <p className="text-sm text-muted-enhanced">
-                              {proyecto.complejidad} complejidad
-                            </p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="table-cell-enhanced">
-                        <Badge className="badge-info">
-                          {proyecto.tipo}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="table-cell-enhanced">
-                        <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                          proyecto.estado === 'activo' ? 'status-activo' :
-                          proyecto.estado === 'planificacion' ? 'status-planificacion' :
-                          'status-pausado'
-                        }`}>
-                          {proyecto.estado || 'planificacion'}
-                        </div>
-                      </TableCell>
-                      <TableCell className="table-cell-enhanced">
-                        <span className="text-number">{proyecto.duracionMeses} meses</span>
-                      </TableCell>
-                      <TableCell className="table-cell-enhanced">
-                        <span className="text-number">{proyecto.colaboradores.length}</span>
-                      </TableCell>
-                      <TableCell className="table-cell-enhanced">
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => router.push(`/proyectos/${proyecto.id}`)}
-                            className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDelete(proyecto.id)}
-                            className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8">
+                        <p>Cargando proyectos...</p>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : error ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8 text-red-600">
+                        <p>Error: {error}</p>
+                      </TableCell>
+                    </TableRow>
+                  ) : proyectos.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8">
+                        <FolderOpen className="h-12 w-12 text-slate-500 mx-auto mb-4" />
+                        <p className="text-primary-enhanced text-lg">No hay proyectos configurados</p>
+                        <p className="text-secondary-enhanced text-sm">Crea tu primer proyecto para comenzar</p>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    proyectos.map((proyecto: any) => (
+                      <TableRow key={proyecto.id} className="border-gray-700 table-row-hover">
+                        <TableCell className="table-cell-enhanced">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500">
+                              <FolderOpen className="h-4 w-4 text-white" />
+                            </div>
+                            <div>
+                              <Link href={`/proyectos/${proyecto.id}`} className="text-primary-enhanced hover:text-blue-300 transition-colors">
+                                {proyecto.nombre}
+                              </Link>
+                              <p className="text-sm text-muted-enhanced">
+                                {proyecto.descripcion || 'Sin descripción'}
+                              </p>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="table-cell-enhanced">
+                          <Badge className="badge-info">
+                            Desarrollo
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="table-cell-enhanced">
+                          <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                            proyecto.estado === 'activo' ? 'status-activo' :
+                            proyecto.estado === 'planificacion' ? 'status-planificacion' :
+                            'status-pausado'
+                          }`}>
+                            {proyecto.estado || 'planificacion'}
+                          </div>
+                        </TableCell>
+                        <TableCell className="table-cell-enhanced">
+                          <span className="text-number">
+                            {proyecto.fecha_fin_estimada 
+                              ? Math.ceil((new Date(proyecto.fecha_fin_estimada).getTime() - new Date(proyecto.fecha_inicio).getTime()) / (1000 * 60 * 60 * 24 * 30))
+                              : 'N/A'
+                            } meses
+                          </span>
+                        </TableCell>
+                        <TableCell className="table-cell-enhanced">
+                          <span className="text-number">N/A</span>
+                        </TableCell>
+                        <TableCell className="table-cell-enhanced">
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => router.push(`/proyectos/${proyecto.id}`)}
+                              className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDelete(proyecto.id.toString())}
+                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
-
-              {state.proyectos.length === 0 && (
-                <div className="text-center py-12">
-                  <FolderOpen className="h-12 w-12 text-slate-500 mx-auto mb-4" />
-                  <p className="text-primary-enhanced text-lg">No hay proyectos configurados</p>
-                  <p className="text-secondary-enhanced text-sm">Crea tu primer proyecto para comenzar</p>
-                </div>
-              )}
             </div>
           </CardContent>
         </Card>
