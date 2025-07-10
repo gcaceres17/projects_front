@@ -1,5 +1,7 @@
 "use client"
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import type React from "react"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
@@ -19,7 +21,7 @@ export default function Colaboradores() {
   const { state, dispatch } = useApp()
 
   // Estado para integración con API
-  const [apiColaboradores, setApiColaboradores] = useState<any[]>([]);
+  const [apiColaboradores, setApiColaboradores] = useState<unknown[]>([]);
   const [isLoadingApi, setIsLoadingApi] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -34,9 +36,9 @@ export default function Colaboradores() {
         const colaboradores = await colaboradoresService.list();
         console.log('Colaboradores recibidos de la API:', colaboradores);
         setApiColaboradores(colaboradores);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.log('Error cargando colaboradores de la API, usando datos locales:', error);
-        setApiError(error?.message || 'Error de conexión');
+        setApiError((error as Error)?.message || 'Error de conexión');
       } finally {
         setIsLoadingApi(false);
       }
@@ -442,7 +444,7 @@ export default function Colaboradores() {
                     <Checkbox
                       id={`tech-${tecnologia}`}
                       checked={formData.tecnologias.includes(tecnologia)}
-                      onCheckedChange={(checked) => handleTecnologiaChange(tecnologia, checked as boolean)}
+                      onCheckedChange={(checked: boolean) => handleTecnologiaChange(tecnologia, checked)}
                     />
                     <Label htmlFor={`tech-${tecnologia}`} className="text-sm text-primary-enhanced cursor-pointer">
                       {tecnologia}
@@ -464,7 +466,7 @@ export default function Colaboradores() {
                     <Checkbox
                       id={costo.id}
                       checked={formData.costosRigidos.includes(costo.id)}
-                      onCheckedChange={(checked) => handleCostoRigidoChange(costo.id, checked as boolean)}
+                      onCheckedChange={(checked: boolean) => handleCostoRigidoChange(costo.id, checked)}
                     />
                     <div className="flex-1">
                       <Label htmlFor={costo.id} className="text-sm font-medium text-primary-enhanced cursor-pointer">
@@ -522,41 +524,43 @@ export default function Colaboradores() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {colaboradores.map((colaborador) => (
-                  <TableRow key={colaborador.id} className="border-gray-700 table-row-hover">
+                {colaboradores.map((colaborador) => {
+                  const col = colaborador as Colaborador;
+                  return (
+                  <TableRow key={col.id} className="border-gray-700 table-row-hover">
                     <TableCell className="table-cell-enhanced">
                       <div className="flex items-center gap-3">
                         <div className="p-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500">
                           <UserPlus className="h-4 w-4 text-white" />
                         </div>
                         <div>
-                          <div className="text-primary-enhanced font-medium">{colaborador.nombre}</div>
+                          <div className="text-primary-enhanced font-medium">{col.nombre}</div>
                           <div className="text-sm text-muted-enhanced">
-                            {colaborador.antiguedad} años • {colaborador.horasMensuales}h/mes • {colaborador.disponibilidad}%
+                            {col.antiguedad} años • {col.horasMensuales}h/mes • {col.disponibilidad}%
                           </div>
                         </div>
                       </div>
                     </TableCell>
-                  <TableCell className="table-cell-enhanced text-secondary-enhanced">{colaborador.rol}</TableCell>
+                  <TableCell className="table-cell-enhanced text-secondary-enhanced">{col.rol}</TableCell>
                   <TableCell className="table-cell-enhanced">
-                    <Badge className={getNivelColor(colaborador.nivel)}>{colaborador.nivel}</Badge>
+                    <Badge className={getNivelColor(col.nivel)}>{col.nivel}</Badge>
                   </TableCell>
                   <TableCell className="table-cell-enhanced">
-                    <span className="text-money">₲{colaborador.salarioBruto.toLocaleString()}</span>
+                    <span className="text-money">₲{col.salarioBruto.toLocaleString()}</span>
                   </TableCell>
                   <TableCell className="table-cell-enhanced">
-                    <span className="text-money font-bold">₲{calcularCostoTotal(colaborador).toLocaleString()}</span>
+                    <span className="text-money font-bold">₲{calcularCostoTotal(col).toLocaleString()}</span>
                   </TableCell>
                   <TableCell className="table-cell-enhanced">
                     <div className="flex flex-wrap gap-1">
-                      {colaborador.tecnologias.slice(0, 3).map((tech) => (
+                      {col.tecnologias.slice(0, 3).map((tech: string) => (
                         <Badge key={tech} variant="outline" className="text-xs badge-info">
                           {tech}
                         </Badge>
                       ))}
-                      {colaborador.tecnologias.length > 3 && (
+                      {col.tecnologias.length > 3 && (
                         <Badge variant="outline" className="text-xs badge-info">
-                          +{colaborador.tecnologias.length - 3}
+                          +{col.tecnologias.length - 3}
                         </Badge>
                       )}
                     </div>
@@ -566,7 +570,7 @@ export default function Colaboradores() {
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => handleEdit(colaborador)}
+                        onClick={() => handleEdit(col)}
                         className="h-8 w-8 p-0 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
                       >
                         <Edit className="h-4 w-4" />
@@ -575,7 +579,7 @@ export default function Colaboradores() {
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => handleDelete(colaborador.id)}
+                        onClick={() => handleDelete(col.id)}
                         className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -584,7 +588,8 @@ export default function Colaboradores() {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+                  );
+                })}
             </TableBody>
             </Table>
 

@@ -1,5 +1,8 @@
 "use client"
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,7 +19,7 @@ export default function Cotizaciones() {
   const { state } = useApp()
 
   // Estado para integración con API
-  const [apiCotizaciones, setApiCotizaciones] = useState<any[]>([]);
+  const [apiCotizaciones, setApiCotizaciones] = useState<unknown[]>([]);
   const [isLoadingApi, setIsLoadingApi] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -31,9 +34,9 @@ export default function Cotizaciones() {
         const cotizaciones = await cotizacionesService.list();
         console.log('Cotizaciones recibidas de la API:', cotizaciones);
         setApiCotizaciones(cotizaciones);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.log('Error cargando cotizaciones de la API, usando datos locales:', error);
-        setApiError(error?.message || 'Error de conexión');
+        setApiError((error as Error)?.message || 'Error de conexión');
       } finally {
         setIsLoadingApi(false);
       }

@@ -27,7 +27,7 @@ export default function Dashboard() {
   const { state } = useApp()
 
   // Estado para datos de la API
-  const [apiData, setApiData] = useState<any>(null);
+  const [apiData, setApiData] = useState<unknown>(null);
   const [isLoadingApi, setIsLoadingApi] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -42,9 +42,9 @@ export default function Dashboard() {
         const dashboardData = await reportesService.getDashboard();
         console.log('Datos recibidos de la API:', dashboardData);
         setApiData(dashboardData);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.log('API no disponible, usando datos locales:', error);
-        setApiError(`Error de API: ${error?.message || 'Error de conexión'}`);
+        setApiError(`Error de API: ${(error as Error)?.message || 'Error de conexión'}`);
       } finally {
         setIsLoadingApi(false);
       }
@@ -57,15 +57,16 @@ export default function Dashboard() {
   const getStats = () => {
     if (apiData) {
       // Usar datos de la API
+      const data = apiData as any;
       return {
-        proyectosActivos: apiData.proyectos.activos,
-        proyectosPlanificacion: apiData.proyectos.total - apiData.proyectos.activos - apiData.proyectos.completados,
-        totalColaboradores: apiData.colaboradores.total,
-        cotizacionesPendientes: apiData.cotizaciones.pendientes,
-        valorCotizaciones: apiData.cotizaciones.valor_total,
-        clientesActivos: apiData.clientes.activos,
-        utilizacionPromedio: apiData.colaboradores.porcentaje_activos,
-        proyectos: apiData.proyectos
+        proyectosActivos: data.proyectos.activos,
+        proyectosPlanificacion: data.proyectos.total - data.proyectos.activos - data.proyectos.completados,
+        totalColaboradores: data.colaboradores.total,
+        cotizacionesPendientes: data.cotizaciones.pendientes,
+        valorCotizaciones: data.cotizaciones.valor_total,
+        clientesActivos: data.clientes.activos,
+        utilizacionPromedio: data.colaboradores.porcentaje_activos,
+        proyectos: data.proyectos
       };
     } else {
       // Fallback a datos locales

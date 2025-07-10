@@ -22,7 +22,7 @@ export default function ProyectosPage() {
   const router = useRouter()
 
   // Estado para integración con API
-  const [apiProyectos, setApiProyectos] = useState<any[]>([]);
+  const [apiProyectos, setApiProyectos] = useState<unknown[]>([]);
   const [isLoadingApi, setIsLoadingApi] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -55,9 +55,9 @@ export default function ProyectosPage() {
         const proyectos = await proyectosService.list();
         console.log('Proyectos recibidos de la API:', proyectos);
         setApiProyectos(proyectos);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.log('Error cargando proyectos de la API, usando datos locales:', error);
-        setApiError(error?.message || 'Error de conexión');
+        setApiError((error as Error)?.message || 'Error de conexión');
       } finally {
         setIsLoadingApi(false);
       }
@@ -71,8 +71,6 @@ export default function ProyectosPage() {
     return apiProyectos.length > 0 ? apiProyectos : state.proyectos;
   };
 
-  const proyectos = getProyectos();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -85,9 +83,8 @@ export default function ProyectosPage() {
           presupuesto: 0, // Se calculará
           estado: 'planificacion',
           fecha_inicio: new Date().toISOString().split('T')[0],
-          fecha_fin: new Date(Date.now() + formData.duracionMeses * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          fecha_fin_estimada: new Date(Date.now() + formData.duracionMeses * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
           cliente_id: 1, // Temporal - necesitaría selector de cliente
-          colaborador_responsable_id: 1 // Temporal - necesitaría selector
         });
         
         // Recargar proyectos
@@ -143,7 +140,6 @@ export default function ProyectosPage() {
       })
     }
   }
-  }
 
   const handleColaboradorChange = (colaboradorId: string, checked: boolean, horas: number = 160) => {
     if (checked) {
@@ -194,7 +190,6 @@ export default function ProyectosPage() {
       // Fallback a estado local si falla API
       dispatch({ type: "DELETE_PROYECTO", payload: id });
     }
-  }
   }
 
   const calcularCostoTotal = (proyecto: Proyecto) => {
@@ -522,7 +517,7 @@ export default function ProyectosPage() {
                             <Checkbox
                               id={`colaborador-${colaborador.id}`}
                               checked={!!colaboradorAsignado}
-                              onCheckedChange={(checked) => handleColaboradorChange(colaborador.id, checked as boolean)}
+                              onCheckedChange={(checked: boolean) => handleColaboradorChange(colaborador.id, checked)}
                             />
                             <div>
                               <Label htmlFor={`colaborador-${colaborador.id}`} className="text-primary-enhanced font-medium">

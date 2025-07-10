@@ -64,8 +64,8 @@ export default function RegisterPage() {
     try {
       await register(formData.email, formData.password, formData.nombre, formData.apellido);
       router.push('/');
-    } catch (err: any) {
-      setError(err.message || 'Error al registrarse');
+    } catch (err: unknown) {
+      setError((err as Error).message || 'Error al registrarse');
     } finally {
       setIsLoading(false);
     }
