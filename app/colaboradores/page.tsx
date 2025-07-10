@@ -139,8 +139,20 @@ export default function Colaboradores() {
     setEditingId(colaborador.id)
   }
 
-  const handleDelete = (id: string) => {
-    dispatch({ type: "DELETE_COLABORADOR", payload: id })
+  const handleDelete = async (id: string) => {
+    try {
+      if (apiColaboradores.length > 0) {
+        await colaboradoresService.delete(parseInt(id));
+        const colaboradoresActualizados = await colaboradoresService.list();
+        setApiColaboradores(colaboradoresActualizados);
+        console.log('Colaborador eliminado de la API');
+      } else {
+        dispatch({ type: "DELETE_COLABORADOR", payload: id });
+      }
+    } catch (error) {
+      console.error('Error eliminando colaborador:', error);
+      dispatch({ type: "DELETE_COLABORADOR", payload: id });
+    }
   }
 
   const handleCostoRigidoChange = (costoId: string, checked: boolean) => {

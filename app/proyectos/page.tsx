@@ -73,38 +73,76 @@ export default function ProyectosPage() {
 
   const proyectos = getProyectos();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    const nuevoProyecto: Proyecto = {
-      id: Date.now().toString(),
-      estado: "planificacion",
-      ...formData,
+    try {
+      if (apiProyectos.length > 0) {
+        // Usar API
+        const nuevoProyecto = await proyectosService.create({
+          nombre: formData.nombre,
+          descripcion: `Proyecto ${formData.tipo} con metodología ${formData.metodologia}`,
+          presupuesto: 0, // Se calculará
+          estado: 'planificacion',
+          fecha_inicio: new Date().toISOString().split('T')[0],
+          fecha_fin: new Date(Date.now() + formData.duracionMeses * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          cliente_id: 1, // Temporal - necesitaría selector de cliente
+          colaborador_responsable_id: 1 // Temporal - necesitaría selector
+        });
+        
+        // Recargar proyectos
+        const proyectosActualizados = await proyectosService.list();
+        setApiProyectos(proyectosActualizados);
+        
+        console.log('Proyecto creado en API:', nuevoProyecto);
+      } else {
+        // Fallback a estado local
+        const nuevoProyecto: Proyecto = {
+          id: Date.now().toString(),
+          estado: "planificacion",
+          ...formData,
+        }
+
+        dispatch({
+          type: "ADD_PROYECTO",
+          payload: nuevoProyecto,
+        })
+      }
+      
+      // Reset form en ambos casos
+      setFormData({
+        nombre: "",
+        duracionMeses: 6,
+        tipo: "desarrollo",
+        complejidad: "media",
+        metodologia: "agile",
+        margenDeseado: 20,
+        tasaCambio: 7300,
+        factorRiesgoProyecto: 1.1,
+        colaboradores: [],
+        gastosAdicionales: {
+          infraestructura: 0,
+          licencias: 0,
+          capacitacion: 0,
+          otros: 0,
+        },
+      })
+      
+    } catch (error) {
+      console.error('Error creando proyecto:', error);
+      // Fallback a estado local si falla API
+      const nuevoProyecto: Proyecto = {
+        id: Date.now().toString(),
+        estado: "planificacion",
+        ...formData,
+      }
+
+      dispatch({
+        type: "ADD_PROYECTO",
+        payload: nuevoProyecto,
+      })
     }
-
-    dispatch({
-      type: "ADD_PROYECTO",
-      payload: nuevoProyecto,
-    })
-
-    // Reset form
-    setFormData({
-      nombre: "",
-      duracionMeses: 6,
-      tipo: "desarrollo",
-      complejidad: "media",
-      metodologia: "agile",
-      margenDeseado: 20,
-      tasaCambio: 7300,
-      factorRiesgoProyecto: 1.1,
-      colaboradores: [],
-      gastosAdicionales: {
-        infraestructura: 0,
-        licencias: 0,
-        capacitacion: 0,
-        otros: 0,
-      },
-    })
+  }
   }
 
   const handleColaboradorChange = (colaboradorId: string, checked: boolean, horas: number = 160) => {
@@ -138,8 +176,25 @@ export default function ProyectosPage() {
     })
   }
 
-  const handleDelete = (id: string) => {
-    dispatch({ type: "DELETE_PROYECTO", payload: id })
+  const handleDelete = async (id: string) => {
+    try {
+      if (apiProyectos.length > 0) {
+        // Usar API
+        await proyectosService.delete(parseInt(id));
+        // Recargar proyectos
+        const proyectosActualizados = await proyectosService.list();
+        setApiProyectos(proyectosActualizados);
+        console.log('Proyecto eliminado de la API');
+      } else {
+        // Fallback a estado local
+        dispatch({ type: "DELETE_PROYECTO", payload: id });
+      }
+    } catch (error) {
+      console.error('Error eliminando proyecto:', error);
+      // Fallback a estado local si falla API
+      dispatch({ type: "DELETE_PROYECTO", payload: id });
+    }
+  }
   }
 
   const calcularCostoTotal = (proyecto: Proyecto) => {

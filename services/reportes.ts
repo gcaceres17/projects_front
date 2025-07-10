@@ -43,7 +43,7 @@ export interface FinancialSummary {
 // Servicio de reportes
 export const reportesService = {
   getDashboard: async (): Promise<DashboardStats> => {
-    // Temporalmente usar endpoint de prueba sin autenticación
+    // Usar endpoint de prueba para demostración (funciona sin autenticación)
     return apiClient.get<DashboardStats>('/reportes/dashboard-test');
   },
 
