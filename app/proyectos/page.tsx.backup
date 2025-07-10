@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -12,7 +12,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { StatCard } from "@/components/ui/stat-card"
 import { useApp, type Proyecto, type ProyectoColaborador } from "@/components/app-provider"
-import { proyectosService } from "@/services/proyectos"
 import { Plus, Calculator, FolderOpen, Settings, Sparkles, DollarSign, Target, Briefcase, Users, Zap, Shield, Edit, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -20,12 +19,6 @@ import Link from "next/link"
 export default function ProyectosPage() {
   const { state, dispatch } = useApp()
   const router = useRouter()
-
-  // Estado para integración con API
-  const [apiProyectos, setApiProyectos] = useState<any[]>([]);
-  const [isLoadingApi, setIsLoadingApi] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
-
   const [formData, setFormData] = useState({
     nombre: "",
     duracionMeses: 6,
@@ -43,35 +36,6 @@ export default function ProyectosPage() {
       otros: 0,
     },
   })
-
-  // Cargar proyectos de la API al inicializar
-  useEffect(() => {
-    const loadProyectos = async () => {
-      try {
-        setIsLoadingApi(true);
-        setApiError(null);
-        
-        console.log('Cargando proyectos desde la API...');
-        const proyectos = await proyectosService.list();
-        console.log('Proyectos recibidos de la API:', proyectos);
-        setApiProyectos(proyectos);
-      } catch (error: any) {
-        console.log('Error cargando proyectos de la API, usando datos locales:', error);
-        setApiError(error?.message || 'Error de conexión');
-      } finally {
-        setIsLoadingApi(false);
-      }
-    };
-
-    loadProyectos();
-  }, []);
-
-  // Función para obtener proyectos (API + local fallback)
-  const getProyectos = () => {
-    return apiProyectos.length > 0 ? apiProyectos : state.proyectos;
-  };
-
-  const proyectos = getProyectos();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -181,30 +145,6 @@ export default function ProyectosPage() {
           <p className="text-primary-enhanced text-lg">
             Planifica, gestiona y supervisa todos tus proyectos de desarrollo
           </p>
-          
-          {/* API Status Indicators */}
-          <div className="flex items-center justify-center gap-3 mt-4">
-            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
-              isLoadingApi 
-                ? 'bg-yellow-100 text-yellow-700' 
-                : apiProyectos.length > 0
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'bg-gray-100 text-gray-700'
-            }`}>
-              {isLoadingApi ? (
-                <>🔄 Cargando API...</>
-              ) : apiProyectos.length > 0 ? (
-                <>✅ API Conectada ({apiProyectos.length} proyectos)</>
-              ) : (
-                <>📂 Datos Locales ({state.proyectos.length} proyectos)</>
-              )}
-            </div>
-            {apiError && (
-              <div className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
-                ⚠️ {apiError.substring(0, 30)}...
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Stats Cards */}

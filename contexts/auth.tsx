@@ -33,26 +33,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const initAuth = async () => {
       try {
-        if (authService.isAuthenticated()) {
-          // Intentar obtener usuario del servidor
+        const token = authService.getToken();
+        if (token) {
+          // Solo intentar obtener usuario si hay token
           try {
             const userData = await authService.getCurrentUser();
             setUser(userData);
             authService.setStoredUser(userData);
           } catch (error) {
-            // Si falla, usar datos del localStorage
-            const storedUser = authService.getStoredUser();
-            if (storedUser) {
-              setUser(storedUser);
-            } else {
-              // Si no hay datos válidos, hacer logout
-              authService.logout();
-            }
+            console.log('Token inválido o expirado, limpiando autenticación');
+            // Si falla la validación del token, limpiar todo
+            authService.logout();
+            setUser(null);
           }
+        } else {
+          // No hay token, verificar si hay usuario en localStorage
+          const storedUser = authService.getStoredUser();
+          if (storedUser) {
+            // Hay usuario almacenado pero no token, limpiar
+            authService.logout();
+          }
+          setUser(null);
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
         authService.logout();
+        setUser(null);
       } finally {
         setIsLoading(false);
       }

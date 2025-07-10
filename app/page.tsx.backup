@@ -1,12 +1,10 @@
 "use client"
 
-import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { StatCard } from "@/components/ui/stat-card"
 import { useApp } from "@/components/app-provider"
-import { reportesService } from '@/services/reportes';
 import { 
   Users, 
   FolderOpen, 
@@ -26,89 +24,11 @@ import {
 export default function Dashboard() {
   const { state } = useApp()
 
-  // Estado para datos de la API
-  const [apiData, setApiData] = useState<any>(null);
-  const [isLoadingApi, setIsLoadingApi] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
+  const proyectosActivos = state.proyectos.filter((p) => p.estado === "activo").length
+  const proyectosPlanificacion = state.proyectos.filter((p) => p.estado === "planificacion").length
+  const totalColaboradores = state.colaboradores.length
 
-  // Cargar datos de la API de manera opcional
-  useEffect(() => {
-    const loadApiData = async () => {
-      try {
-        setIsLoadingApi(true);
-        setApiError(null);
-        
-        console.log('Intentando cargar datos del dashboard desde la API...');
-        const dashboardData = await reportesService.getDashboard();
-        console.log('Datos recibidos de la API:', dashboardData);
-        setApiData(dashboardData);
-      } catch (error: any) {
-        console.log('API no disponible, usando datos locales:', error);
-        setApiError(`Error de API: ${error?.message || 'Error de conexión'}`);
-      } finally {
-        setIsLoadingApi(false);
-      }
-    };
-
-    loadApiData();
-  }, []);
-
-  // Función para obtener estadísticas combinadas (API + local fallback)
-  const getStats = () => {
-    if (apiData) {
-      // Usar datos de la API
-      return {
-        proyectosActivos: apiData.proyectos.activos,
-        proyectosPlanificacion: apiData.proyectos.total - apiData.proyectos.activos - apiData.proyectos.completados,
-        totalColaboradores: apiData.colaboradores.total,
-        cotizacionesPendientes: apiData.cotizaciones.pendientes,
-        valorCotizaciones: apiData.cotizaciones.valor_total,
-        clientesActivos: apiData.clientes.activos,
-        utilizacionPromedio: apiData.colaboradores.porcentaje_activos,
-        proyectos: apiData.proyectos
-      };
-    } else {
-      // Fallback a datos locales
-      const proyectosActivos = state.proyectos.filter((p) => p.estado === "activo").length
-      const proyectosPlanificacion = state.proyectos.filter((p) => p.estado === "planificacion").length
-      const totalColaboradores = state.colaboradores.length
-
-      const utilizacionPromedio =
-        state.colaboradores.reduce((total, colaborador) => {
-          const horasAsignadas = state.proyectos.reduce((horas, proyecto) => {
-            const asignacion = proyecto.colaboradores.find((pc) => pc.colaboradorId === colaborador.id)
-            return horas + (asignacion?.horasAsignadas || 0)
-          }, 0)
-
-          return total + (horasAsignadas / colaborador.horasMensuales) * 100
-        }, 0) / state.colaboradores.length || 0
-
-      return {
-        proyectosActivos,
-        proyectosPlanificacion,
-        totalColaboradores,
-        cotizacionesPendientes: 0,
-        valorCotizaciones: 0,
-        clientesActivos: 0,
-        utilizacionPromedio,
-        proyectos: {
-          total: state.proyectos.length,
-          activos: proyectosActivos,
-          completados: state.proyectos.filter((p) => p.estado === "completado").length,
-          porcentaje_completados: state.proyectos.length > 0 ? (state.proyectos.filter((p) => p.estado === "completado").length / state.proyectos.length * 100) : 0
-        }
-      };
-    }
-  };
-
-  const stats = getStats();
-
-  const proyectosActivos = stats.proyectosActivos;
-  const proyectosPlanificacion = stats.proyectosPlanificacion;
-  const totalColaboradores = stats.totalColaboradores;
-
-  // Cálculos adicionales (solo para datos locales)
-  const costoMensualTotal = apiData ? 0 : state.colaboradores.reduce((total, colaborador) => {
+  const costoMensualTotal = state.colaboradores.reduce((total, colaborador) => {
     const costosRigidosAplicados = state.costosRigidos
       .filter((costo) => colaborador.costosRigidos.includes(costo.id))
       .reduce((costoTotal, costo) => {
@@ -122,7 +42,7 @@ export default function Dashboard() {
     return total + colaborador.salarioBruto + costosRigidosAplicados
   }, 0)
 
-  const ingresosPotenciales = apiData ? stats.valorCotizaciones : state.proyectos.reduce((total, proyecto) => {
+  const ingresosPotenciales = state.proyectos.reduce((total, proyecto) => {
     const costoColaboradores = proyecto.colaboradores.reduce((sum, pc) => {
       const colaborador = state.colaboradores.find((c) => c.id === pc.colaboradorId)
       if (!colaborador) return sum
@@ -148,7 +68,15 @@ export default function Dashboard() {
     return total + costoTotal + margen
   }, 0)
 
-  const utilizacionPromedio = stats.utilizacionPromedio;
+  const utilizacionPromedio =
+    state.colaboradores.reduce((total, colaborador) => {
+      const horasAsignadas = state.proyectos.reduce((horas, proyecto) => {
+        const asignacion = proyecto.colaboradores.find((pc) => pc.colaboradorId === colaborador.id)
+        return horas + (asignacion?.horasAsignadas || 0)
+      }, 0)
+
+      return total + (horasAsignadas / colaborador.horasMensuales) * 100
+    }, 0) / state.colaboradores.length || 0
 
   const calcularCostoTotal = (colaborador: typeof state.colaboradores[0]) => {
     const costosRigidosAplicados = state.costosRigidos
@@ -183,48 +111,10 @@ export default function Dashboard() {
         </div>
         
         {/* Status indicator */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-lg w-fit">
-            <Activity className="h-4 w-4 text-emerald-600" />
-            <span className="text-sm font-medium text-emerald-700">Sistema Operativo</span>
-            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-          </div>
-          
-          {/* API Status Indicator */}
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-lg w-fit ${
-            isLoadingApi 
-              ? 'bg-yellow-50 border border-yellow-200' 
-              : apiData 
-                ? 'bg-blue-50 border border-blue-200'
-                : 'bg-gray-50 border border-gray-200'
-          }`}>
-            {isLoadingApi ? (
-              <>
-                <Clock className="h-4 w-4 text-yellow-600 animate-spin" />
-                <span className="text-sm font-medium text-yellow-700">Cargando API...</span>
-              </>
-            ) : apiData ? (
-              <>
-                <CheckCircle className="h-4 w-4 text-blue-600" />
-                <span className="text-sm font-medium text-blue-700">API Conectada</span>
-              </>
-            ) : (
-              <>
-                <AlertTriangle className="h-4 w-4 text-gray-600" />
-                <span className="text-sm font-medium text-gray-700">Datos Locales</span>
-              </>
-            )}
-          </div>
-
-          {/* Error details for debugging */}
-          {apiError && (
-            <div className="flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 rounded-lg w-fit">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
-              <span className="text-xs font-medium text-red-700" title={apiError}>
-                Error API: {apiError.substring(0, 50)}{apiError.length > 50 ? '...' : ''}
-              </span>
-            </div>
-          )}
+        <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-lg w-fit">
+          <Activity className="h-4 w-4 text-emerald-600" />
+          <span className="text-sm font-medium text-emerald-700">Sistema Operativo</span>
+          <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
         </div>
       </div>
 
@@ -258,19 +148,19 @@ export default function Dashboard() {
 
         <StatCard
           title="Costo Mensual"
-          value={apiData ? `₲${stats.valorCotizaciones.toLocaleString()}` : `₲${costoMensualTotal.toLocaleString()}`}
-          description={apiData ? "Valor total cotizaciones" : "Costo total del equipo"}
+          value={`₲${costoMensualTotal.toLocaleString()}`}
+          description="Costo total del equipo"
           icon={DollarSign}
           gradient="from-orange-500 to-red-600"
         />
 
         <StatCard
-          title={apiData ? "Cotizaciones" : "Ingresos Potenciales"}
-          value={apiData ? stats.cotizacionesPendientes : `₲${ingresosPotenciales.toLocaleString()}`}
-          description={apiData ? `${stats.valorCotizaciones > 0 ? 'pendientes' : 'registradas'}` : "Proyectos en pipeline"}
+          title="Ingresos Potenciales"
+          value={`₲${ingresosPotenciales.toLocaleString()}`}
+          description="Proyectos en pipeline"
           icon={TrendingUp}
           gradient="from-purple-500 to-pink-600"
-          trend={apiData ? undefined : {
+          trend={{
             value: 24,
             label: "incremento proyectado",
             isPositive: true

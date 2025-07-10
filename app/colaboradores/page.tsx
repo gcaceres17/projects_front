@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,10 +12,46 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { StatCard } from "@/components/ui/stat-card"
 import { useApp, type Colaborador } from "@/components/app-provider"
+import { colaboradoresService } from "@/services/colaboradores"
 import { Trash2, Edit, UserPlus, Code, Award, Users, Clock, DollarSign, Star, Shield } from "lucide-react"
 
 export default function Colaboradores() {
   const { state, dispatch } = useApp()
+
+  // Estado para integración con API
+  const [apiColaboradores, setApiColaboradores] = useState<any[]>([]);
+  const [isLoadingApi, setIsLoadingApi] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  // Cargar colaboradores de la API al inicializar
+  useEffect(() => {
+    const loadColaboradores = async () => {
+      try {
+        setIsLoadingApi(true);
+        setApiError(null);
+        
+        console.log('Cargando colaboradores desde la API...');
+        const colaboradores = await colaboradoresService.list();
+        console.log('Colaboradores recibidos de la API:', colaboradores);
+        setApiColaboradores(colaboradores);
+      } catch (error: any) {
+        console.log('Error cargando colaboradores de la API, usando datos locales:', error);
+        setApiError(error?.message || 'Error de conexión');
+      } finally {
+        setIsLoadingApi(false);
+      }
+    };
+
+    loadColaboradores();
+  }, []);
+
+  // Función para obtener colaboradores (API + local fallback)
+  const getColaboradores = () => {
+    return apiColaboradores.length > 0 ? apiColaboradores : state.colaboradores;
+  };
+
+  const colaboradores = getColaboradores();
+
   const [editingId, setEditingId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     nombre: "",
@@ -198,6 +233,30 @@ export default function Colaboradores() {
           <p className="text-primary-enhanced text-lg">
             Administra el equipo de desarrollo con información detallada y métricas avanzadas
           </p>
+          
+          {/* API Status Indicators */}
+          <div className="flex items-center justify-center gap-3 mt-4">
+            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
+              isLoadingApi 
+                ? 'bg-yellow-100 text-yellow-700' 
+                : apiColaboradores.length > 0
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'bg-gray-100 text-gray-700'
+            }`}>
+              {isLoadingApi ? (
+                <>🔄 Cargando API...</>
+              ) : apiColaboradores.length > 0 ? (
+                <>✅ API Conectada ({apiColaboradores.length} colaboradores)</>
+              ) : (
+                <>👥 Datos Locales ({state.colaboradores.length} colaboradores)</>
+              )}
+            </div>
+            {apiError && (
+              <div className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
+                ⚠️ {apiError.substring(0, 30)}...
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -451,7 +510,7 @@ export default function Colaboradores() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {state.colaboradores.map((colaborador) => (
+                {colaboradores.map((colaborador) => (
                   <TableRow key={colaborador.id} className="border-gray-700 table-row-hover">
                     <TableCell className="table-cell-enhanced">
                       <div className="flex items-center gap-3">
@@ -517,7 +576,7 @@ export default function Colaboradores() {
             </TableBody>
             </Table>
 
-            {state.colaboradores.length === 0 && (
+            {colaboradores.length === 0 && (
               <div className="text-center py-12">
                 <Users className="h-12 w-12 text-slate-500 mx-auto mb-4" />
                 <p className="text-primary-enhanced text-lg">No hay colaboradores registrados</p>

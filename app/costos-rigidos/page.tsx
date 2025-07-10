@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,10 +10,46 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { StatCard } from "@/components/ui/stat-card"
 import { useApp, type CostoRigido } from "@/components/app-provider"
+import { costosRigidosService } from "@/services/costos-rigidos"
 import { Trash2, Edit, Plus, Calculator, DollarSign, Percent, Shield, Sparkles } from "lucide-react"
 
 export default function CostosRigidos() {
   const { state, dispatch } = useApp()
+
+  // Estado para integración con API
+  const [apiCostosRigidos, setApiCostosRigidos] = useState<any[]>([]);
+  const [isLoadingApi, setIsLoadingApi] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  // Cargar costos rígidos de la API al inicializar
+  useEffect(() => {
+    const loadCostosRigidos = async () => {
+      try {
+        setIsLoadingApi(true);
+        setApiError(null);
+        
+        console.log('Cargando costos rígidos desde la API...');
+        const costosRigidos = await costosRigidosService.list();
+        console.log('Costos rígidos recibidos de la API:', costosRigidos);
+        setApiCostosRigidos(costosRigidos);
+      } catch (error: any) {
+        console.log('Error cargando costos rígidos de la API, usando datos locales:', error);
+        setApiError(error?.message || 'Error de conexión');
+      } finally {
+        setIsLoadingApi(false);
+      }
+    };
+
+    loadCostosRigidos();
+  }, []);
+
+  // Función para obtener costos rígidos (API + local fallback)
+  const getCostosRigidos = () => {
+    return apiCostosRigidos.length > 0 ? apiCostosRigidos : state.costosRigidos;
+  };
+
+  const costosRigidos = getCostosRigidos();
+
   const [editingId, setEditingId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     nombre: "",
@@ -23,26 +59,38 @@ export default function CostosRigidos() {
     categoria: "beneficio" as "legal" | "beneficio" | "operativo" | "otro",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (editingId) {
-      dispatch({
-        type: "UPDATE_COSTO_RIGIDO",
-        payload: {
-          id: editingId,
-          ...formData,
-        },
-      })
+      // Actualizar costo rígido
+      try {
+        await costosRigidosService.update(editingId, formData);
+        dispatch({
+          type: "UPDATE_COSTO_RIGIDO",
+          payload: {
+            id: editingId,
+            ...formData,
+          },
+        })
+      } catch (error) {
+        console.error('Error actualizando costo rígido:', error);
+      }
       setEditingId(null)
     } else {
-      dispatch({
-        type: "ADD_COSTO_RIGIDO",
-        payload: {
+      // Agregar nuevo costo rígido
+      try {
+        const newCosto = await costosRigidosService.create({
           id: Date.now().toString(),
           ...formData,
-        },
-      })
+        });
+        dispatch({
+          type: "ADD_COSTO_RIGIDO",
+          payload: newCosto,
+        })
+      } catch (error) {
+        console.error('Error agregando nuevo costo rígido:', error);
+      }
     }
 
     setFormData({ nombre: "", tipo: "fijo", valor: 0, descripcion: "", categoria: "beneficio" })
@@ -59,8 +107,14 @@ export default function CostosRigidos() {
     setEditingId(costo.id)
   }
 
-  const handleDelete = (id: string) => {
-    dispatch({ type: "DELETE_COSTO_RIGIDO", payload: id })
+  const handleDelete = async (id: string) => {
+    // Eliminar costo rígido
+    try {
+      await costosRigidosService.delete(parseInt(id));
+      dispatch({ type: "DELETE_COSTO_RIGIDO", payload: id })
+    } catch (error) {
+      console.error('Error eliminando costo rígido:', error);
+    }
   }
 
   const cancelEdit = () => {

@@ -1,17 +1,46 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { StatCard } from "@/components/ui/stat-card"
 import { useApp } from "@/components/app-provider"
+import { cotizacionesService } from "@/services/cotizaciones"
 import { FileText, Download, Calculator, DollarSign, Users, TrendingUp, Sparkles, Target, Award } from "lucide-react"
 
 export default function Cotizaciones() {
   const searchParams = useSearchParams()
   const proyectoId = searchParams.get("proyecto")
   const { state } = useApp()
+
+  // Estado para integración con API
+  const [apiCotizaciones, setApiCotizaciones] = useState<any[]>([]);
+  const [isLoadingApi, setIsLoadingApi] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  // Cargar cotizaciones de la API al inicializar
+  useEffect(() => {
+    const loadCotizaciones = async () => {
+      try {
+        setIsLoadingApi(true);
+        setApiError(null);
+        
+        console.log('Cargando cotizaciones desde la API...');
+        const cotizaciones = await cotizacionesService.list();
+        console.log('Cotizaciones recibidas de la API:', cotizaciones);
+        setApiCotizaciones(cotizaciones);
+      } catch (error: any) {
+        console.log('Error cargando cotizaciones de la API, usando datos locales:', error);
+        setApiError(error?.message || 'Error de conexión');
+      } finally {
+        setIsLoadingApi(false);
+      }
+    };
+
+    loadCotizaciones();
+  }, []);
 
   const proyecto = state.proyectos.find((p) => p.id === proyectoId)
 
