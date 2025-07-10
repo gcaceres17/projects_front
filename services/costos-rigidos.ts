@@ -3,16 +3,16 @@ import { apiClient } from '@/lib/api';
 // Interfaces para costos rígidos
 export interface CostoRigido {
   id: number;
-  proyecto_id?: number;
+  proyecto_id?: number | null;
   nombre: string;
-  descripcion?: string;
-  tipo: 'fijo' | 'variable';
+  descripcion?: string | null;
+  tipo: 'fijo' | 'variable' | 'recurrente';
   valor: number;
   moneda: string;
-  frecuencia?: string;
-  fecha_aplicacion?: string;
-  categoria?: string;
-  proveedor?: string;
+  frecuencia?: string | null;
+  fecha_aplicacion?: string | null;
+  categoria?: string | null;
+  proveedor?: string | null;
   activo: boolean;
   fecha_creacion: string;
   fecha_actualizacion: string;
@@ -22,16 +22,17 @@ export interface CostoRigido {
 }
 
 export interface CostoRigidoCreateData {
-  proyecto_id?: number;
+  proyecto_id?: number | null;
   nombre: string;
-  descripcion?: string;
-  tipo: 'fijo' | 'variable';
+  descripcion?: string | null;
+  tipo: 'fijo' | 'variable' | 'recurrente';
   valor: number;
   moneda?: string;
-  frecuencia?: string;
-  fecha_aplicacion?: string;
-  categoria?: string;
-  proveedor?: string;
+  frecuencia?: string | null;
+  fecha_aplicacion?: string | null;
+  categoria?: string | null;
+  proveedor?: string | null;
+  activo?: boolean;
 }
 
 export interface CostoRigidoUpdateData extends Partial<CostoRigidoCreateData> {

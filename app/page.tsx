@@ -147,62 +147,62 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-8 p-6 bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 min-h-screen">
-      {/* Header Section */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
-            <BarChart3 className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 bg-clip-text text-transparent">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header Section */}
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="p-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg">
+              <BarChart3 className="h-8 w-8 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
               Dashboard Ejecutivo
             </h1>
-            <p className="text-lg text-slate-600 font-medium">
-              Vista general del estado de proyectos y recursos
-            </p>
           </div>
+          <p className="text-gray-300 text-lg">
+            Vista general del estado de proyectos y recursos
+          </p>
         </div>
         
         {/* Status indicator */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-lg w-fit">
-            <Activity className="h-4 w-4 text-emerald-600" />
-            <span className="text-sm font-medium text-emerald-700">Sistema Operativo</span>
+          <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 rounded-lg w-fit">
+            <Activity className="h-4 w-4 text-emerald-400" />
+            <span className="text-sm font-medium text-emerald-300">Sistema Operativo</span>
             <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
           </div>
           
           {/* API Status Indicator */}
           <div className={`flex items-center gap-2 px-4 py-2 rounded-lg w-fit ${
             isLoadingApi 
-              ? 'bg-yellow-50 border border-yellow-200' 
+              ? 'bg-yellow-500/20 border border-yellow-500/30' 
               : apiData 
-                ? 'bg-blue-50 border border-blue-200'
-                : 'bg-gray-50 border border-gray-200'
+                ? 'bg-blue-500/20 border border-blue-500/30'
+                : 'bg-gray-500/20 border border-gray-500/30'
           }`}>
             {isLoadingApi ? (
               <>
-                <Clock className="h-4 w-4 text-yellow-600 animate-spin" />
-                <span className="text-sm font-medium text-yellow-700">Cargando API...</span>
+                <Clock className="h-4 w-4 text-yellow-400 animate-spin" />
+                <span className="text-sm font-medium text-yellow-300">Cargando API...</span>
               </>
             ) : apiData ? (
               <>
-                <CheckCircle className="h-4 w-4 text-blue-600" />
-                <span className="text-sm font-medium text-blue-700">API Conectada</span>
+                <CheckCircle className="h-4 w-4 text-blue-400" />
+                <span className="text-sm font-medium text-blue-300">API Conectada</span>
               </>
             ) : (
               <>
-                <AlertTriangle className="h-4 w-4 text-gray-600" />
-                <span className="text-sm font-medium text-gray-700">Datos Locales</span>
+                <AlertTriangle className="h-4 w-4 text-gray-400" />
+                <span className="text-sm font-medium text-gray-300">Datos Locales</span>
               </>
             )}
           </div>
 
           {/* Error details for debugging */}
           {apiError && (
-            <div className="flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 rounded-lg w-fit">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
-              <span className="text-xs font-medium text-red-700" title={apiError}>
+            <div className="flex items-center gap-2 px-4 py-2 bg-red-500/20 border border-red-500/30 rounded-lg w-fit">
+              <AlertTriangle className="h-4 w-4 text-red-400" />
+              <span className="text-xs font-medium text-red-300" title={apiError}>
                 Error API: {apiError.substring(0, 50)}{apiError.length > 50 ? '...' : ''}
               </span>
             </div>

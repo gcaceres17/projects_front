@@ -102,21 +102,25 @@ export default function Cotizaciones() {
     : 0;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">
-            {proyectoId ? `Cotizaciones - ${proyectoNombre}` : "Cotizaciones"}
-          </h1>
-          <p className="text-muted-foreground">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="p-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg">
+              <FileText className="h-8 w-8 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+              {proyectoId ? `Cotizaciones - ${proyectoNombre}` : "Cotizaciones"}
+            </h1>
+          </div>
+          <p className="text-gray-300 text-lg">
             {proyectoId 
               ? "Cotizaciones específicas del proyecto seleccionado"
               : "Gestiona todas las cotizaciones del negocio"
             }
           </p>
         </div>
-      </div>
 
       {/* Estadísticas */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -151,9 +155,9 @@ export default function Cotizaciones() {
       </div>
 
       {/* Lista de Cotizaciones */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+      <Card className="glassmorphism border-indigo-500/30 hover:border-indigo-400/50 transition-all duration-300">
+        <CardHeader className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10">
+          <CardTitle className="flex items-center gap-2 text-white">
             <FileText className="h-5 w-5" />
             Lista de Cotizaciones
           </CardTitle>
@@ -161,17 +165,17 @@ export default function Cotizaciones() {
         <CardContent>
           {isLoading ? (
             <div className="text-center py-8">
-              <p>Cargando cotizaciones...</p>
+              <p className="text-gray-300">Cargando cotizaciones...</p>
             </div>
           ) : error ? (
-            <div className="text-center py-8 text-red-600">
+            <div className="text-center py-8 text-red-400">
               <p>Error: {error}</p>
               <Button onClick={loadCotizaciones} variant="outline" className="mt-2">
                 Reintentar
               </Button>
             </div>
           ) : cotizaciones.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="text-center py-8 text-gray-400">
               <p>
                 {proyectoId 
                   ? "No hay cotizaciones para este proyecto"
@@ -220,11 +224,11 @@ export default function Cotizaciones() {
                     </TableCell>
                     <TableCell>
                       <div className={`${
-                        new Date(cotizacion.fecha_vencimiento) < new Date() 
+                        cotizacion.fecha_vencimiento && new Date(cotizacion.fecha_vencimiento) < new Date() 
                           ? 'text-red-600' 
                           : 'text-muted-foreground'
                       }`}>
-                        {new Date(cotizacion.fecha_vencimiento).toLocaleDateString()}
+                        {cotizacion.fecha_vencimiento ? new Date(cotizacion.fecha_vencimiento).toLocaleDateString() : 'Sin vencimiento'}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -249,9 +253,9 @@ export default function Cotizaciones() {
 
       {/* Resumen por Estado */}
       {!isLoading && !error && cotizaciones.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+        <Card className="glassmorphism border-green-500/30 hover:border-green-400/50 transition-all duration-300">
+          <CardHeader className="bg-gradient-to-r from-green-500/10 to-emerald-500/10">
+            <CardTitle className="flex items-center gap-2 text-white">
               <Award className="h-5 w-5" />
               Resumen por Estado
             </CardTitle>
@@ -278,6 +282,7 @@ export default function Cotizaciones() {
           </CardContent>
         </Card>
       )}
+      </div>
     </div>
   );
 }

@@ -123,7 +123,7 @@ export default function Reportes() {
                           </div>
                           <div>
                             <p className="font-semibold text-white">{colaborador.nombre}</p>
-                            <p className="text-sm text-muted-enhanced">{colaborador.antiguedad} años de antigüedad</p>
+                            <p className="text-sm text-gray-400">{colaborador.antiguedad} años de antigüedad</p>
                           </div>
                         </div>
                         <div className="text-right">
@@ -166,7 +166,7 @@ export default function Reportes() {
                         </div>
                         <div>
                           <p className="font-semibold text-white">{proyecto.nombre}</p>
-                          <p className="text-sm text-muted-enhanced">{proyecto.colaboradores.length} colaboradores</p>
+                          <p className="text-sm text-gray-400">{proyecto.colaboradores.length} colaboradores</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -199,31 +199,30 @@ export default function Reportes() {
                 Resumen de Costos Rígidos
               </span>
             </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {state.costosRigidos.map((costo) => (
-                <div key={costo.id} className="p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className={`p-2 rounded-full ${costo.tipo === 'fijo' ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-gradient-to-r from-orange-500 to-red-500'}`}>
-                      {costo.tipo === 'fijo' ? <DollarSign className="h-4 w-4 text-white" /> : <Zap className="h-4 w-4 text-white" />}
+          </CardHeader>            <CardContent className="p-6">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {state.costosRigidos.map((costo) => (
+                  <div key={costo.id} className="p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className={`p-2 rounded-full ${costo.tipo === 'fijo' ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-gradient-to-r from-orange-500 to-red-500'}`}>
+                        {costo.tipo === 'fijo' ? <DollarSign className="h-4 w-4 text-white" /> : <Zap className="h-4 w-4 text-white" />}
+                      </div>
+                      <h3 className="font-semibold text-white">{costo.nombre}</h3>
                     </div>
-                    <h3 className="font-semibold text-white">{costo.nombre}</h3>
+                    <p className="text-2xl font-bold font-mono text-center mb-2">
+                      {costo.tipo === "fijo" ? (
+                        <span className="text-green-400">₲{costo.valor.toLocaleString()}</span>
+                      ) : (
+                        <span className="text-orange-400">{costo.valor}%</span>
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-400 text-center">
+                      Tipo: {costo.tipo === "fijo" ? "Fijo" : "Porcentaje"}
+                    </p>
                   </div>
-                  <p className="text-2xl font-bold font-mono text-center mb-2">
-                    {costo.tipo === "fijo" ? (
-                      <span className="text-green-400">₲{costo.valor.toLocaleString()}</span>
-                    ) : (
-                      <span className="text-orange-400">{costo.valor}%</span>
-                    )}
-                  </p>
-                  <p className="text-sm text-muted-enhanced text-center">
-                    Tipo: {costo.tipo === "fijo" ? "Fijo" : "Porcentaje"}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
+                ))}
+              </div>
+            </CardContent>
         </Card>
       </div>
     </div>
