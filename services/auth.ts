@@ -4,7 +4,7 @@ import { User, LoginRequest, LoginResponse, RegisterRequest } from '@/types/auth
 class AuthService {
   // Login
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
+    const response = await apiClient.post<LoginResponse>('/auth/login/', credentials);
     
     // Guardar token en localStorage
     if (typeof window !== 'undefined' && response.access_token) {
@@ -16,12 +16,12 @@ class AuthService {
 
   // Registro
   async register(data: RegisterRequest): Promise<User> {
-    return await apiClient.post<User>('/auth/register', data);
+    return await apiClient.post<User>('/auth/register/', data);
   }
 
   // Obtener usuario actual
   async getCurrentUser(): Promise<User> {
-    return await apiClient.get<User>('/auth/me');
+    return await apiClient.get<User>('/auth/me/');
   }
 
   // Logout

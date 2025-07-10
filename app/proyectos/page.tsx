@@ -52,11 +52,14 @@ export default function ProyectosPage() {
         setError(null);
         
         const proyectosData = await proyectosService.list();
-        setProyectos(proyectosData);
+        // Asegurar que siempre sea un array
+        setProyectos(Array.isArray(proyectosData) ? proyectosData : []);
       } catch (error: unknown) {
         const errorMessage = (error as Error)?.message || 'Error de conexión';
         setError(errorMessage);
         console.error('Error cargando proyectos:', error);
+        // En caso de error, establecer array vacío
+        setProyectos([]);
       } finally {
         setIsLoading(false);
       }
@@ -87,7 +90,7 @@ export default function ProyectosPage() {
       
       // Recargar proyectos
       const proyectosActualizados = await proyectosService.list();
-      setProyectos(proyectosActualizados);
+      setProyectos(Array.isArray(proyectosActualizados) ? proyectosActualizados : []);
       
       console.log('Proyecto creado en API:', nuevoProyecto);
       
@@ -157,7 +160,7 @@ export default function ProyectosPage() {
       await proyectosService.delete(parseInt(id));
       // Recargar proyectos
       const proyectosActualizados = await proyectosService.list();
-      setProyectos(proyectosActualizados);
+      setProyectos(Array.isArray(proyectosActualizados) ? proyectosActualizados : []);
     } catch (error: unknown) {
       const errorMessage = (error as Error)?.message || 'Error eliminando proyecto';
       alert(`Error: ${errorMessage}`);
@@ -183,11 +186,11 @@ export default function ProyectosPage() {
     return costoTotal * (1 + proyecto.margenDeseado / 100)
   }
 
-  const totalProyectos = proyectos.length;
-  const proyectosActivos = proyectos.filter((p: any) => p.estado === 'activo').length;
-  const valorTotalCartera = proyectos.reduce((total: number, proyecto: any) => {
+  const totalProyectos = Array.isArray(proyectos) ? proyectos.length : 0;
+  const proyectosActivos = Array.isArray(proyectos) ? proyectos.filter((p: any) => p.estado === 'activo').length : 0;
+  const valorTotalCartera = Array.isArray(proyectos) ? proyectos.reduce((total: number, proyecto: any) => {
     return total + (proyecto.presupuesto || 0);
-  }, 0);
+  }, 0) : 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
@@ -577,7 +580,7 @@ export default function ProyectosPage() {
                         <p>Error: {error}</p>
                       </TableCell>
                     </TableRow>
-                  ) : proyectos.length === 0 ? (
+                  ) : !Array.isArray(proyectos) || proyectos.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={6} className="text-center py-8">
                         <FolderOpen className="h-12 w-12 text-slate-500 mx-auto mb-4" />
@@ -586,7 +589,7 @@ export default function ProyectosPage() {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    proyectos.map((proyecto: any) => (
+                    Array.isArray(proyectos) && proyectos.map((proyecto: any) => (
                       <TableRow key={proyecto.id} className="border-gray-700 table-row-hover">
                         <TableCell className="table-cell-enhanced">
                           <div className="flex items-center gap-3">

@@ -30,10 +30,13 @@ export default function Cotizaciones() {
       if (proyectoId) {
         // Filtrar cotizaciones por proyecto específico
         const allCotizaciones = await cotizacionesService.list();
-        cotizacionesData = allCotizaciones.filter(c => c.proyecto_id === parseInt(proyectoId));
+        cotizacionesData = Array.isArray(allCotizaciones) 
+          ? allCotizaciones.filter(c => c.proyecto_id === parseInt(proyectoId))
+          : [];
       } else {
         // Cargar todas las cotizaciones
-        cotizacionesData = await cotizacionesService.list();
+        const data = await cotizacionesService.list();
+        cotizacionesData = Array.isArray(data) ? data : [];
       }
       
       setCotizaciones(cotizacionesData);
@@ -41,6 +44,8 @@ export default function Cotizaciones() {
       const errorMessage = (error as Error)?.message || 'Error de conexión con la API';
       setError(errorMessage);
       console.error('Error cargando cotizaciones:', error);
+      // En caso de error, establecer array vacío
+      setCotizaciones([]);
     } finally {
       setIsLoading(false);
     }
@@ -87,12 +92,14 @@ export default function Cotizaciones() {
     }
   };
 
-  const totalCotizaciones = cotizaciones.length;
-  const cotizacionesAprobadas = cotizaciones.filter(c => c.estado === 'aprobada').length;
-  const montoTotal = cotizaciones.reduce((sum, c) => sum + c.total, 0);
-  const montoAprobado = cotizaciones
-    .filter(c => c.estado === 'aprobada')
-    .reduce((sum, c) => sum + c.total, 0);
+  const totalCotizaciones = Array.isArray(cotizaciones) ? cotizaciones.length : 0;
+  const cotizacionesAprobadas = Array.isArray(cotizaciones) ? cotizaciones.filter(c => c.estado === 'aprobada').length : 0;
+  const montoTotal = Array.isArray(cotizaciones) ? cotizaciones.reduce((sum, c) => sum + c.total, 0) : 0;
+  const montoAprobado = Array.isArray(cotizaciones) 
+    ? cotizaciones
+        .filter(c => c.estado === 'aprobada')
+        .reduce((sum, c) => sum + c.total, 0)
+    : 0;
 
   return (
     <div className="space-y-6">

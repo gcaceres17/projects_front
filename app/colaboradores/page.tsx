@@ -41,11 +41,14 @@ export default function Colaboradores() {
       setError(null);
       
       const colaboradoresData = await colaboradoresService.list();
-      setColaboradores(colaboradoresData);
+      // Asegurar que siempre sea un array
+      setColaboradores(Array.isArray(colaboradoresData) ? colaboradoresData : []);
     } catch (error: unknown) {
       const errorMessage = (error as Error)?.message || 'Error de conexión con la API';
       setError(errorMessage);
       console.error('Error cargando colaboradores:', error);
+      // En caso de error, establecer array vacío
+      setColaboradores([]);
     } finally {
       setIsLoading(false);
     }
@@ -117,9 +120,9 @@ export default function Colaboradores() {
     setEditingId(null);
   };
 
-  const totalColaboradores = colaboradores.length;
-  const colaboradoresActivos = colaboradores.filter(c => c.activo).length;
-  const salarioPromedio = colaboradores.length > 0 
+  const totalColaboradores = Array.isArray(colaboradores) ? colaboradores.length : 0;
+  const colaboradoresActivos = Array.isArray(colaboradores) ? colaboradores.filter(c => c.activo).length : 0;
+  const salarioPromedio = Array.isArray(colaboradores) && colaboradores.length > 0 
     ? colaboradores.reduce((sum, c) => sum + c.salario, 0) / colaboradores.length 
     : 0;
 
@@ -286,7 +289,7 @@ export default function Colaboradores() {
                 Reintentar
               </Button>
             </div>
-          ) : colaboradores.length === 0 ? (
+          ) : !Array.isArray(colaboradores) || colaboradores.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <p>No hay colaboradores registrados</p>
             </div>
@@ -304,7 +307,7 @@ export default function Colaboradores() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {colaboradores.map((colaborador) => (
+                {Array.isArray(colaboradores) && colaboradores.map((colaborador) => (
                   <TableRow key={colaborador.id}>
                     <TableCell className="font-medium">
                       {colaborador.nombre} {colaborador.apellido}

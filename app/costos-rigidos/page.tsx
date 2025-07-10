@@ -38,11 +38,14 @@ export default function CostosRigidos() {
       setError(null);
       
       const costosData = await costosRigidosService.list();
-      setCostosRigidos(costosData);
+      // Asegurar que siempre sea un array
+      setCostosRigidos(Array.isArray(costosData) ? costosData : []);
     } catch (error: unknown) {
       const errorMessage = (error as Error)?.message || 'Error de conexión con la API';
       setError(errorMessage);
       console.error('Error cargando costos rígidos:', error);
+      // En caso de error, establecer array vacío
+      setCostosRigidos([]);
     } finally {
       setIsLoading(false);
     }
@@ -122,12 +125,14 @@ export default function CostosRigidos() {
     setEditingId(null);
   };
 
-  const totalCostos = costosRigidos.length;
-  const costosActivos = costosRigidos.filter(c => c.activo).length;
-  const valorTotalFijos = costosRigidos
-    .filter(c => c.activo && c.tipo === 'fijo')
-    .reduce((sum, c) => sum + c.valor, 0);
-  const promedioValor = costosRigidos.length > 0 
+  const totalCostos = Array.isArray(costosRigidos) ? costosRigidos.length : 0;
+  const costosActivos = Array.isArray(costosRigidos) ? costosRigidos.filter(c => c.activo).length : 0;
+  const valorTotalFijos = Array.isArray(costosRigidos) 
+    ? costosRigidos
+        .filter(c => c.activo && c.tipo === 'fijo')
+        .reduce((sum, c) => sum + c.valor, 0)
+    : 0;
+  const promedioValor = Array.isArray(costosRigidos) && costosRigidos.length > 0 
     ? costosRigidos.reduce((sum, c) => sum + c.valor, 0) / costosRigidos.length 
     : 0;
 
@@ -274,7 +279,7 @@ export default function CostosRigidos() {
                 Reintentar
               </Button>
             </div>
-          ) : costosRigidos.length === 0 ? (
+          ) : !Array.isArray(costosRigidos) || costosRigidos.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <p>No hay costos rígidos registrados</p>
             </div>
@@ -291,7 +296,7 @@ export default function CostosRigidos() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {costosRigidos.map((costo) => (
+                {Array.isArray(costosRigidos) && costosRigidos.map((costo) => (
                   <TableRow key={costo.id}>
                     <TableCell className="font-medium">
                       <div>

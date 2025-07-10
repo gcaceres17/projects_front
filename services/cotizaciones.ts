@@ -6,87 +6,101 @@ export interface Cotizacion {
   numero: string;
   cliente_id: number;
   proyecto_id?: number;
-  descripcion: string;
+  titulo: string;
+  descripcion?: string;
   estado: 'borrador' | 'enviada' | 'aprobada' | 'rechazada' | 'vencida';
   subtotal: number;
   impuestos: number;
+  descuento: number;
   total: number;
   fecha_creacion: string;
-  fecha_vencimiento: string;
-  fecha_respuesta?: string;
+  fecha_envio?: string;
+  fecha_vencimiento?: string;
+  fecha_aprobacion?: string;
+  validez_dias: number;
   terminos_condiciones?: string;
   notas?: string;
   activo: boolean;
-  created_at?: string;
-  updated_at?: string;
+  cliente?: any;
+  proyecto?: any;
+  items?: any[];
+  dias_para_vencimiento?: number;
+  porcentaje_impuestos?: number;
 }
 
 export interface CotizacionCreateData {
   cliente_id: number;
   proyecto_id?: number;
-  descripcion: string;
-  subtotal: number;
-  impuestos: number;
-  fecha_vencimiento: string;
+  titulo: string;
+  descripcion?: string;
+  descuento?: number;
+  fecha_vencimiento?: string;
+  validez_dias?: number;
   terminos_condiciones?: string;
   notas?: string;
+  items?: any[];
 }
 
 export interface CotizacionUpdateData extends Partial<CotizacionCreateData> {
   estado?: 'borrador' | 'enviada' | 'aprobada' | 'rechazada' | 'vencida';
-  fecha_respuesta?: string;
+  fecha_envio?: string;
+  fecha_aprobacion?: string;
   activo?: boolean;
 }
 
 // Servicio de cotizaciones
 export const cotizacionesService = {
   list: async (params?: Record<string, any>): Promise<Cotizacion[]> => {
-    return apiClient.get<Cotizacion[]>('/cotizaciones', params);
+    return apiClient.get<Cotizacion[]>('/cotizaciones/cotizaciones/', params);
   },
 
   getById: async (id: number): Promise<Cotizacion> => {
-    return apiClient.get<Cotizacion>(`/cotizaciones/${id}`);
+    return apiClient.get<Cotizacion>(`/cotizaciones/cotizaciones/${id}/`);
   },
 
   create: async (data: CotizacionCreateData): Promise<Cotizacion> => {
-    return apiClient.post<Cotizacion>('/cotizaciones', data);
+    return apiClient.post<Cotizacion>('/cotizaciones/cotizaciones/', data);
   },
 
   update: async (id: number, data: CotizacionUpdateData): Promise<Cotizacion> => {
-    return apiClient.put<Cotizacion>(`/cotizaciones/${id}`, data);
+    return apiClient.put<Cotizacion>(`/cotizaciones/cotizaciones/${id}/`, data);
   },
 
   delete: async (id: number): Promise<void> => {
-    return apiClient.delete(`/cotizaciones/${id}`);
+    return apiClient.delete(`/cotizaciones/cotizaciones/${id}/`);
   },
 
   getByStatus: async (estado: string): Promise<Cotizacion[]> => {
-    return apiClient.get<Cotizacion[]>(`/cotizaciones?estado=${estado}`);
+    return apiClient.get<Cotizacion[]>(`/cotizaciones/cotizaciones/?estado=${estado}`);
   },
 
   getByClient: async (cliente_id: number): Promise<Cotizacion[]> => {
-    return apiClient.get<Cotizacion[]>(`/cotizaciones?cliente_id=${cliente_id}`);
+    return apiClient.get<Cotizacion[]>(`/cotizaciones/cotizaciones/?cliente_id=${cliente_id}`);
   },
 
   approve: async (id: number): Promise<Cotizacion> => {
-    return apiClient.patch<Cotizacion>(`/cotizaciones/${id}/aprobar`);
+    return apiClient.patch<Cotizacion>(`/cotizaciones/cotizaciones/${id}/aprobar/`);
   },
 
   reject: async (id: number, motivo?: string): Promise<Cotizacion> => {
-    return apiClient.patch<Cotizacion>(`/cotizaciones/${id}/rechazar`, { motivo });
+    return apiClient.patch<Cotizacion>(`/cotizaciones/cotizaciones/${id}/rechazar/`, { motivo });
   },
 
   send: async (id: number): Promise<Cotizacion> => {
-    return apiClient.patch<Cotizacion>(`/cotizaciones/${id}/enviar`);
+    return apiClient.patch<Cotizacion>(`/cotizaciones/cotizaciones/${id}/enviar/`);
+  },
+
+  changeStatus: async (id: number): Promise<Cotizacion> => {
+    return apiClient.patch<Cotizacion>(`/cotizaciones/cotizaciones/${id}/estado/`);
   },
 
   getStatistics: async (): Promise<any> => {
-    return apiClient.get<any>('/cotizaciones/estadisticas');
+    return apiClient.get<any>('/cotizaciones/cotizaciones/estadisticas/resumen/');
   },
 
   generatePDF: async (id: number): Promise<Blob> => {
     // Este endpoint devuelve un PDF
-    const response = await fetch(`${apiClient['baseURL']}/cotizaciones/${id}/pdf`);
+    const response = await fetch(`${apiClient['baseURL']}/cotizaciones/cotizaciones/${id}/pdf/`);
     return response.blob();
   }
 };

@@ -44,30 +44,30 @@ export interface FinancialSummary {
 export const reportesService = {
   getDashboard: async (): Promise<DashboardStats> => {
     // Usar endpoint de prueba para demostración (funciona sin autenticación)
-    return apiClient.get<DashboardStats>('/reportes/dashboard-test');
+    return apiClient.get<DashboardStats>('/reportes/dashboard-test/');
   },
 
   getProjectsByStatus: async (): Promise<ProjectByStatus[]> => {
-    return apiClient.get<ProjectByStatus[]>('/reportes/proyectos-por-estado');
+    return apiClient.get<ProjectByStatus[]>('/reportes/proyectos-por-estado/');
   },
 
   getQuotationsByMonth: async (year: number): Promise<any[]> => {
-    return apiClient.get<any[]>(`/reportes/cotizaciones-por-mes?año=${year}`);
+    return apiClient.get<any[]>(`/reportes/cotizaciones-por-mes/?año=${year}`);
   },
 
   getRigidCostsSummary: async (): Promise<any> => {
-    return apiClient.get<any>('/reportes/costos-rigidos-resumen');
+    return apiClient.get<any>('/reportes/costos-rigidos-resumen/');
   },
 
   getCollaboratorsProductivity: async (): Promise<any[]> => {
-    return apiClient.get<any[]>('/reportes/colaboradores-productividad');
+    return apiClient.get<any[]>('/reportes/colaboradores-productividad/');
   },
 
   getMostActiveClients: async (limit: number = 10): Promise<any[]> => {
-    return apiClient.get<any[]>(`/reportes/clientes-mas-activos?limite=${limit}`);
+    return apiClient.get<any[]>(`/reportes/clientes-mas-activos/?limite=${limit}`);
   },
 
   getFinancialSummary: async (): Promise<FinancialSummary> => {
-    return apiClient.get<FinancialSummary>('/reportes/resumen-financiero');
+    return apiClient.get<FinancialSummary>('/reportes/resumen-financiero/');
   }
 };

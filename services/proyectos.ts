@@ -39,36 +39,36 @@ export interface ProyectoUpdateData extends Partial<ProyectoCreateData> {
 export const proyectosService = {
   // Listar todos los proyectos
   list: async (params: Record<string, any> = {}): Promise<Proyecto[]> => {
-    return apiClient.get<Proyecto[]>('/proyectos', params);
+    return apiClient.get<Proyecto[]>('/proyectos/', params);
   },
 
   // Obtener proyecto por ID
   getById: async (id: number): Promise<Proyecto> => {
-    return apiClient.get<Proyecto>(`/proyectos/${id}`);
+    return apiClient.get<Proyecto>(`/proyectos/${id}/`);
   },
 
   // Crear nuevo proyecto
   create: async (data: ProyectoCreateData): Promise<Proyecto> => {
-    return apiClient.post<Proyecto>('/proyectos', data);
+    return apiClient.post<Proyecto>('/proyectos/', data);
   },
 
   // Actualizar proyecto
   update: async (id: number, data: ProyectoUpdateData): Promise<Proyecto> => {
-    return apiClient.put<Proyecto>(`/proyectos/${id}`, data);
+    return apiClient.put<Proyecto>(`/proyectos/${id}/`, data);
   },
 
   // Eliminar proyecto
   delete: async (id: number): Promise<void> => {
-    return apiClient.delete<void>(`/proyectos/${id}`);
+    return apiClient.delete<void>(`/proyectos/${id}/`);
   },
 
   // Obtener estadísticas del proyecto
   getStatistics: async (id: number): Promise<any> => {
-    return apiClient.get<any>(`/proyectos/${id}/estadisticas`);
+    return apiClient.get<any>(`/proyectos/${id}/estadisticas/`);
   },
 
   // Filtrar proyectos por estado
   getByStatus: async (estado: string): Promise<Proyecto[]> => {
-    return apiClient.get<Proyecto[]>('/proyectos', { estado });
+    return apiClient.get<Proyecto[]>('/proyectos/', { estado });
   }
 };

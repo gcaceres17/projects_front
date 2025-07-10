@@ -34,38 +34,38 @@ export interface ColaboradorUpdateData extends Partial<ColaboradorCreateData> {
 // Servicio de colaboradores
 export const colaboradoresService = {
   list: async (params?: Record<string, any>): Promise<Colaborador[]> => {
-    return apiClient.get<Colaborador[]>('/colaboradores', params);
+    return apiClient.get<Colaborador[]>('/colaboradores/', params);
   },
 
   getById: async (id: number): Promise<Colaborador> => {
-    return apiClient.get<Colaborador>(`/colaboradores/${id}`);
+    return apiClient.get<Colaborador>(`/colaboradores/${id}/`);
   },
 
   create: async (data: ColaboradorCreateData): Promise<Colaborador> => {
-    return apiClient.post<Colaborador>('/colaboradores', data);
+    return apiClient.post<Colaborador>('/colaboradores/', data);
   },
 
   update: async (id: number, data: ColaboradorUpdateData): Promise<Colaborador> => {
-    return apiClient.put<Colaborador>(`/colaboradores/${id}`, data);
+    return apiClient.put<Colaborador>(`/colaboradores/${id}/`, data);
   },
 
   delete: async (id: number): Promise<void> => {
-    return apiClient.delete(`/colaboradores/${id}`);
+    return apiClient.delete(`/colaboradores/${id}/`);
   },
 
   getStatistics: async (): Promise<any> => {
-    return apiClient.get<any>('/colaboradores/estadisticas');
+    return apiClient.get<any>('/colaboradores/estadisticas/');
   },
 
   getByType: async (tipo: string): Promise<Colaborador[]> => {
-    return apiClient.get<Colaborador[]>(`/colaboradores?tipo=${tipo}`);
+    return apiClient.get<Colaborador[]>(`/colaboradores/?tipo=${tipo}`);
   },
 
   activate: async (id: number): Promise<Colaborador> => {
-    return apiClient.patch<Colaborador>(`/colaboradores/${id}/activar`);
+    return apiClient.patch<Colaborador>(`/colaboradores/${id}/activar/`);
   },
 
   deactivate: async (id: number): Promise<Colaborador> => {
-    return apiClient.patch<Colaborador>(`/colaboradores/${id}/desactivar`);
+    return apiClient.patch<Colaborador>(`/colaboradores/${id}/desactivar/`);
   }
 };
